@@ -4,10 +4,10 @@
 
 🎯 Objective
 
+Testflight : https://testflight.apple.com/join/yE44pvNa
+
 Play Thrillz on TestFlight to fully understand the competitive game loop.
 Then recreate the core Thrillz experience using:
-
-Testflight : https://testflight.apple.com/join/yE44pvNa
 
 ✅ The assets provided in this repository
 ✅ One mini-game of your choice
