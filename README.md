@@ -15,17 +15,17 @@ Then recreate the core Thrillz experience using:
 
 Your implementation should reproduce the essential player journey:
 
-Pick a Game
+- Pick Game
 
-Enter a Brawl / Match
+- Enter a Brawl / Match
 
-Play the Mini-Game
+- Play the Mini-Game
 
-Submit Score 
+- Submit Score 
 
-Check Result & Ranking
+- Check Result & Ranking
 
-Claim Reward
+- Claim Reward
 
 The primary objective is to demonstrate your ability to build a smooth, live-feeling competitive flow between backend and Unity — clean architecture, strongly typed API integration, and polished UX.
 
@@ -42,9 +42,9 @@ Submit their score whenever they finish
 
 The backend stores their result and later matches it against other players’ scores who join the same brawl. Once all participants have played (or a timer/condition is met), the system:
 
-✅ Calculates the ranking
-✅ Determines the winner
-✅ Makes rewards claimable
+- Calculates the ranking
+- Determines the winner
+- Makes rewards claimable
 
 This approach creates a real-time competitive feeling without requiring synchronous multiplayer networking.
 ## Game Loop Scope
