@@ -2,8 +2,51 @@
 
 ## Objective
 
-Design the "Thrillz" game loop with a strong Live experience.
+🎯 Objective
 
+Play Thrillz on TestFlight to fully understand the competitive game loop.
+Then recreate the core Thrillz experience using:
+
+Testflight : https://testflight.apple.com/join/yE44pvNa
+
+✅ The assets provided in this repository
+✅ One mini-game of your choice
+(can be extremely simple — a Unity asset, a basic mechanic you create, etc.)
+
+Your implementation should reproduce the essential player journey:
+
+Pick a Game
+
+Enter a Brawl / Match
+
+Play the Mini-Game
+
+Submit Score 
+
+Check Result & Ranking
+
+Claim Reward
+
+The primary objective is to demonstrate your ability to build a smooth, live-feeling competitive flow between backend and Unity — clean architecture, strongly typed API integration, and polished UX.
+
+Please note that Thrillz brawls are asynchronous:
+Players do not need to be online or playing at the same time for a brawl to happen.
+
+A player can:
+
+Enter a brawl at any moment
+
+Play their game independently
+
+Submit their score whenever they finish
+
+The backend stores their result and later matches it against other players’ scores who join the same brawl. Once all participants have played (or a timer/condition is met), the system:
+
+✅ Calculates the ranking
+✅ Determines the winner
+✅ Makes rewards claimable
+
+This approach creates a real-time competitive feeling without requiring synchronous multiplayer networking.
 ## Game Loop Scope
 
 The exercise consists of implementing a complete game cycle including the following steps:
