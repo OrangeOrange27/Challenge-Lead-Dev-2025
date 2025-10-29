@@ -34,11 +34,11 @@ Players do not need to be online or playing at the same time for a brawl to happ
 
 A player can:
 
-Enter a brawl at any moment
+- Enter a brawl at any moment
 
-Play their game independently
+- Play their game independently
 
-Submit their score whenever they finish
+- Submit their score whenever they finish
 
 The backend stores their result and later matches it against other players’ scores who join the same brawl. Once all participants have played (or a timer/condition is met), the system:
 
