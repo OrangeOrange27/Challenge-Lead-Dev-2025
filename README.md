@@ -9,8 +9,8 @@ Testflight : https://testflight.apple.com/join/yE44pvNa
 Play Thrillz on TestFlight to fully understand the competitive game loop.
 Then recreate the core Thrillz experience using:
 
-✅ The assets provided in this repository
-✅ One mini-game of your choice
+- The assets provided in this repository
+- One mini-game of your choice
 (can be extremely simple — a Unity asset, a basic mechanic you create, etc.)
 
 Your implementation should reproduce the essential player journey:
