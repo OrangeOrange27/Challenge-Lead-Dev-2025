@@ -1,0 +1,19 @@
+{
+    "name": "Infra.StateMachine",
+    "rootNamespace": "",
+    "references": [
+        "Package.ControllersTree.Core",
+        "Package.ControllersTree.SyntaxSugar",
+        "UniTask",
+        "Infra.ControllersTree"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
