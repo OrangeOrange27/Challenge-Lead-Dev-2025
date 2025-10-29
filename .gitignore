@@ -1,0 +1,57 @@
+# Backend (Node.js / TypeScript)
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/.env
+backend/.env.local
+backend/*.log
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+# Unity
+unity-client/[Ll]ibrary/
+unity-client/[Tt]emp/
+unity-client/[Oo]bj/
+unity-client/[Bb]uild/
+unity-client/[Bb]uilds/
+unity-client/[Ll]ogs/
+unity-client/[Uu]ser[Ss]ettings/
+
+# Unity specific
+unity-client/*.csproj
+unity-client/*.unityproj
+unity-client/*.sln
+unity-client/*.suo
+unity-client/*.tmp
+unity-client/*.user
+unity-client/*.userprefs
+unity-client/*.pidb
+unity-client/*.booproj
+unity-client/*.svd
+unity-client/*.pdb
+unity-client/*.mdb
+unity-client/*.opendb
+unity-client/*.VC.db
+
+# Unity3D generated meta files
+unity-client/*.pidb.meta
+unity-client/*.pdb.meta
+unity-client/*.mdb.meta
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
