@@ -16,6 +16,8 @@ The exercise consists of implementing a complete game cycle including the follow
 6. **Result** - Game result display
 7. **Reward/Claim** - Reward attribution and claiming
 
+**Important Note:** The games are **asynchronous**. Players are not playing in real-time against each other. Instead, they play individually, and their scores are compared afterwards on the leaderboard. The matchmaking system groups players together for competition, but the actual gameplay happens independently for each player.
+
 ## Technical Requirements
 
 ### Backend API (TypeScript)
@@ -42,7 +44,7 @@ You must create a Unity client with the following characteristics:
 
 **Unity Requirements:**
 - Clearly defined MVC or MVVM architecture
-- Clean state management
+- Clean state management (proper separation of concerns, no singletons abuse, clear data flow)
 - Smooth and professional animations (DOTween, Animator, etc.)
 
 ## Design Assets
@@ -73,13 +75,6 @@ backend/          -> Your TypeScript API
 unity-client/     -> Your Unity project
 ```
 
-### Recommended Steps
-
-1. **Backend first**: Start by defining your API and data contracts
-2. **Unity Client**: Implement API integration and architecture
-3. **Animations and Polish**: Add animations and Live feeling
-4. **Tests**: Ensure the complete cycle works
-
 ### Evaluation Criteria
 
 - **Code quality**: Cleanliness, organization, adherence to SOLID principles
@@ -92,7 +87,7 @@ unity-client/     -> Your Unity project
 
 - **Estimated time**: Take the time needed to produce quality work (2-4 days recommended)
 - **Questions**: Don't hesitate to ask questions if certain points are unclear
-- **Creativity**: You have the freedom to choose the type of mini-game and visual style
+- **Mini-Game Choice**: You have complete freedom to choose the type of mini-game you want to implement. This choice will **not be evaluated**. We recommend keeping it simple (e.g., tap game, simple puzzle, quick reflex game, you can use an asset) to focus on the architecture and game loop implementation
 - **Simplicity**: A simple but well-done prototype is better than a complex unfinished project
 
 ## Delivery
