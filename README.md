@@ -45,6 +45,14 @@ You must create a Unity client with the following characteristics:
 - Clean state management
 - Smooth and professional animations (DOTween, Animator, etc.)
 
+## Design Assets
+
+UI/UX design assets are available on Figma:
+
+[Technical Test Assets - Figma](https://www.figma.com/design/vgveBFBH8Dl2mNMK0IWqCB/Technical-test-Assets?node-id=0-1&t=4jbe5sXNrcO2Kk0k-1)
+
+You can use these assets as inspiration or reference for your Unity client implementation.
+
 ## Expected Deliverable
 
 A **functional prototype** demonstrating:
