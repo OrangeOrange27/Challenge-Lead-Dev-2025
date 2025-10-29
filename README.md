@@ -91,12 +91,14 @@ unity-client/     -> Your Unity project
 
 Once completed:
 
-1. Commit your code to this repository
-2. Make sure to include a README in each folder (backend/ and unity-client/) with:
+1. Fork this repository to your own GitHub account
+2. Commit your code to your forked repository
+3. Make sure to include a README in each folder (backend/ and unity-client/) with:
    - Installation instructions
    - Instructions to run the project
    - Technical choices made
-3. Add a `NOTES.md` file at the root with your thoughts, challenges encountered, and possible future improvements
+4. Add a `NOTES.md` file at the root with your thoughts, challenges encountered, and possible future improvements
+5. Send us the link to your forked repository
 
 ---
 
