@@ -3,6 +3,7 @@ using Core.Hub;
 using Core.SplashScreen;
 using Cysharp.Threading.Tasks;
 using Infra;
+using Infra.ControllersTree;
 using Infra.ControllersTree.Abstractions;
 using Infra.StateMachine;
 using UnityEngine;
@@ -43,6 +44,14 @@ namespace Core.EntryPoint
         {
             Application.targetFrameRate = 60;
             Input.multiTouchEnabled = false;
+            
+            await controllerChildren.Create<InitializeGameBeforeAuthController, EmptyPayloadType, EmptyPayloadType>(_objectResolver)
+                .RunToDispose(default, token);
+            
+            // todo: auth here
+            
+            await controllerChildren.Create<InitializeGameAfterAuthController, EmptyPayloadType, EmptyPayloadType>(_objectResolver)
+                .RunToDispose(default, token);
             
             var initialState = StateMachineInstruction.GoToMany(
                 //todo: add states

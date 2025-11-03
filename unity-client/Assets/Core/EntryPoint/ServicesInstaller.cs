@@ -33,11 +33,9 @@ namespace Core.EntryPoint
             builder.RegisterInstance(JsonSettings);
             builder.Register<ISerializer, JsonSerializer>(Lifetime.Singleton);
             RegisterDataProvider(builder);
-
-            builder.RegisterController<StateMachineController>();
-            builder.RegisterController<RootController>();
-            builder.RegisterController<RootHubState>();
-
+            
+            RegisterControllersTree(builder);
+            
             builder.Register<IAssetProvider, AddressablesAssetProvider>(Lifetime.Transient);
             builder.RegisterSelfFactory<IAssetProvider>();
 
@@ -47,9 +45,19 @@ namespace Core.EntryPoint
             
             RegisterHub(builder);
         }
+        
+        private void RegisterControllersTree(IContainerBuilder builder)
+        {
+            builder.RegisterController<StateMachineController>();
+            builder.RegisterController<RootController>();
+            builder.RegisterController<InitializeGameAfterAuthController>();
+            builder.RegisterController<InitializeGameBeforeAuthController>();
+        }
 
         private void RegisterHub(IContainerBuilder builder)
         {
+            builder.RegisterController<RootHubState>();
+
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
             builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
         }
