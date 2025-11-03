@@ -17,6 +17,11 @@ namespace Core.EntryPoint
         
         private readonly SplashSceneView _splashSceneView;
 
+        public RootController(IObjectResolver objectResolver, SplashSceneView splashSceneView)
+        {
+            _objectResolver = objectResolver;
+            _splashSceneView = splashSceneView;
+        }
 
         public UniTask OnInitialize(IControllerResources resources, CancellationToken token)
         {

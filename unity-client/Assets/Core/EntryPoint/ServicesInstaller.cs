@@ -33,9 +33,12 @@ namespace Core.EntryPoint
 
             builder.RegisterController<StateMachineController>();
             builder.RegisterController<RootController>();
+            builder.RegisterController<RootHubState>();
 
             builder.Register<IAssetProvider, AddressablesAssetProvider>(Lifetime.Transient);
             builder.RegisterSelfFactory<IAssetProvider>();
+
+            builder.RegisterInstance(_splashSceneView);
 
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
         }

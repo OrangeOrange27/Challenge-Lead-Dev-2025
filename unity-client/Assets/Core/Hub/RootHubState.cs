@@ -12,6 +12,11 @@ namespace Core.Hub
 
         private readonly IViewLoader<IHubView> _hubViewLoader;
         
+        public RootHubState(IViewLoader<IHubView> hubViewLoader)
+        {
+            _hubViewLoader = hubViewLoader;
+        }
+        
         public UniTask OnInitialize(IControllerResources resources, CancellationToken token)
         {
             return UniTask.CompletedTask;
