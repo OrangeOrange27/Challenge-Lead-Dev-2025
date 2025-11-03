@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.ConfigSystem;
 using Infra.AssetManagement.ViewLoader;
 using Infra.ControllersTree.Abstractions;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Core.EntryPoint
         {
             builder.Register<TAbstraction, TImplementation>(Lifetime.Transient).AsImplementedInterfaces();
         }
-        
+
         public static void RegisterSelfFactory<T>(
             this IContainerBuilder builder,
             Lifetime lifetime = Lifetime.Transient)
@@ -26,6 +27,21 @@ namespace Core.EntryPoint
             builder.RegisterFactory<T>(
                 resolver => () => resolver.Resolve<T>(),
                 lifetime);
+        }
+
+        public static void RegisterConfig<T>(this IContainerBuilder container, string builtInConfigKey,
+            Uri remoteConfigUrl) where T : BaseConfig
+        {
+            container.Register<RemoteConfigProvider<T>>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter(builtInConfigKey)
+                .WithParameter(remoteConfigUrl);
+        }
+
+        public static void RegisterConfig<T>(this IContainerBuilder container, string builtInConfigKey)
+            where T : BaseConfig
+        {
+            container.Register<LocalConfigProvider<T>>(Lifetime.Singleton).AsImplementedInterfaces()
+                .WithParameter(builtInConfigKey);
         }
     }
 }
