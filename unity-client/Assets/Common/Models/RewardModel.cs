@@ -2,7 +2,7 @@
 {
     public struct RewardModel
     {
-        public RewardType RewardType { get; set; }
+        public CurrencyType CurrencyType { get; set; }
         public float Amount { get; set; }
     }
 }

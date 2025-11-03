@@ -12,13 +12,13 @@ namespace Core.Hub.UI
         [SerializeField] private TMP_Text _gemsAmountText;
         [SerializeField] private TMP_Text _cashAmountText;
         
-        public void Set(RewardType rewardType, float amount)
+        public void Set(CurrencyType currencyType, float amount)
         {
             _gemsAmountText.text = $"{amount:0}";
             _cashAmountText.text = $"{amount:0}";
             
-            _gemsReward.gameObject.SetActive(rewardType == RewardType.Gems);
-            _cashReward.gameObject.SetActive(rewardType == RewardType.Cash);
+            _gemsReward.gameObject.SetActive(currencyType == CurrencyType.Gems);
+            _cashReward.gameObject.SetActive(currencyType == CurrencyType.Cash);
         }
     }
 }

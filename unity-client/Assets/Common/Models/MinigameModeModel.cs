@@ -10,21 +10,21 @@ namespace Common.Models
 
         public RewardModel GetPrizePool()
         {
-            var prizePoolType = RewardType.Cash;
+            var prizePoolType = CurrencyType.Cash;
             var prizePool = Prizes
-                .Where(p => p.RewardType == prizePoolType)
+                .Where(p => p.CurrencyType == prizePoolType)
                 .Sum(p => p.Amount);
             if (prizePool <= 0)
             {
-                prizePoolType = RewardType.Gems;
+                prizePoolType = CurrencyType.Gems;
                 prizePool = Prizes
-                    .Where(p => p.RewardType == prizePoolType)
+                    .Where(p => p.CurrencyType == prizePoolType)
                     .Sum(p => p.Amount);
             }
 
             return new RewardModel()
             {
-                RewardType = prizePoolType,
+                CurrencyType = prizePoolType,
                 Amount = prizePool
             };
         }
