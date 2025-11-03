@@ -8,6 +8,7 @@ using Infra.AssetManagement.ViewLoader;
 using Infra.Encoding;
 using Infra.Serialization;
 using Infra.StateMachine;
+using Minigames;
 using Newtonsoft.Json;
 using UnityEngine;
 using VContainer;
@@ -40,6 +41,11 @@ namespace Core.EntryPoint
 
             builder.RegisterInstance(_splashSceneView);
 
+            builder.RegisterConfig<MinigamesConfig>("minigames_config"); //todo: add remote link
+        }
+
+        private void RegisterHub(IContainerBuilder builder)
+        {
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
         }
 

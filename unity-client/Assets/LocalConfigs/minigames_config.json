@@ -1,0 +1,20 @@
+{
+  "Minigames": [
+    {
+      "Id": "dots",
+      "Name": "Dots",
+      "IconId": "dots_icon",
+      "Modes": [
+        {
+          "Prizes": [
+            { "CurrencyType": "Cash", "Amount": 10 },
+            { "CurrencyType": "Gems", "Amount": 1000 },
+            { "CurrencyType": "Gems", "Amount": 500 }
+          ],
+          "EntryFee": { "CurrencyType": "Gems", "Amount": 250 },
+          "ParticipantsCount": 5
+        }
+      ]
+    }
+  ]
+}
