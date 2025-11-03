@@ -1,4 +1,4 @@
-﻿using Core.Hub.UI;
+﻿using Core.Hub;
 using Core.SplashScreen;
 using Infra;
 using Infra.AssetManagement.AssetProvider;
@@ -37,7 +37,7 @@ namespace Core.EntryPoint
             builder.Register<IAssetProvider, AddressablesAssetProvider>(Lifetime.Transient);
             builder.RegisterSelfFactory<IAssetProvider>();
 
-            builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
+            builder.RegisterViewLoader<IHubView, HubView>("HubView");
         }
 
         private void RegisterDataProvider(IContainerBuilder builder)
