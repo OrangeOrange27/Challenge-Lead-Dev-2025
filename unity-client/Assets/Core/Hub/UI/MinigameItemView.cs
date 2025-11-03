@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Core.Hub.UI
 {
-    public class MinigameItemView : MonoBehaviour
+    public class MinigameItemView : MonoBehaviour, IMinigameItemView
     {
         [SerializeField] private Image _mainImage;
         [SerializeField] private GameObject _loadingIndicator;

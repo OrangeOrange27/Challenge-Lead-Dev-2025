@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common
+namespace Infra.Disposables
 {
     public class Disposable : IDisposable
     {
