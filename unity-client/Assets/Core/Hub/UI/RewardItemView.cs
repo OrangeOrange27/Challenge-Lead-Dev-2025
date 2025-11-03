@@ -1,5 +1,5 @@
 ﻿using Common.Models;
-using TMPro;
+using Common.UI;
 using UnityEngine;
 
 namespace Core.Hub.UI
@@ -9,13 +9,16 @@ namespace Core.Hub.UI
         [SerializeField] private Transform _gemsReward;
         [SerializeField] private Transform _cashReward;
         
-        [SerializeField] private TMP_Text _gemsAmountText;
-        [SerializeField] private TMP_Text _cashAmountText;
+        [SerializeField] private GemsText _gemsAmountText;
+        [SerializeField] private CashText _cashAmountText;
         
         public void Set(CurrencyType currencyType, float amount)
         {
-            _gemsAmountText.text = $"{amount:0}";
-            _cashAmountText.text = $"{amount:0}";
+            _gemsAmountText.gameObject.SetActive(currencyType == CurrencyType.Gems);
+            _cashAmountText.gameObject.SetActive(currencyType == CurrencyType.Cash);
+            
+            _gemsAmountText.SetValue(amount);
+            _cashAmountText.SetValue(amount);
             
             _gemsReward.gameObject.SetActive(currencyType == CurrencyType.Gems);
             _cashReward.gameObject.SetActive(currencyType == CurrencyType.Cash);
