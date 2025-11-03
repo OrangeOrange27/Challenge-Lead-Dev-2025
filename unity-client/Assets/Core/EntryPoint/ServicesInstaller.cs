@@ -1,4 +1,5 @@
 ﻿using Core.Hub;
+using Core.Hub.UI;
 using Core.SplashScreen;
 using Infra;
 using Infra.AssetManagement.AssetProvider;
@@ -29,6 +30,7 @@ namespace Core.EntryPoint
 
         protected override void Configure(IContainerBuilder builder)
         {
+            builder.RegisterInstance(JsonSettings);
             builder.Register<ISerializer, JsonSerializer>(Lifetime.Singleton);
             RegisterDataProvider(builder);
 
@@ -42,11 +44,14 @@ namespace Core.EntryPoint
             builder.RegisterInstance(_splashSceneView);
 
             builder.RegisterConfig<MinigamesConfig>("minigames_config"); //todo: add remote link
+            
+            RegisterHub(builder);
         }
 
         private void RegisterHub(IContainerBuilder builder)
         {
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
+            builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
         }
 
         private void RegisterDataProvider(IContainerBuilder builder)

@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using Infra.ControllersTree;
 using Infra.ControllersTree.Abstractions;
 using Infra.StateMachine.Utils;
+using UnityEngine;
 
 namespace Infra.StateMachine
 {
@@ -41,8 +42,16 @@ namespace Infra.StateMachine
 		public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources,
 			IControllerChildren controllerChildren, CancellationToken token)
 		{
-			while (_stackedInstructions.Count > 0 && !token.IsCancellationRequested)
-				await RunState(controllerChildren, token);
+			try
+			{
+				while (_stackedInstructions.Count > 0 && !token.IsCancellationRequested)
+					await RunState(controllerChildren, token);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+				throw;
+			}
 			token.ThrowIfCancellationRequested();
 
 			return _resultStateMachineInstruction ?? DefaultResultOfStateMachine;
@@ -183,7 +192,7 @@ namespace Infra.StateMachine
 				}
 				catch (Exception e)
 				{
-					//don't throw exception to not interrupt next states working. Exception should be logged by LoggerControllerRunner
+					throw; 				//todo: handle
 				}
 
 				try
@@ -192,7 +201,7 @@ namespace Infra.StateMachine
 				}
 				catch (Exception e)
 				{
-					//don't throw exception to not interrupt next states working. Exception should be logged by LoggerControllerRunner
+					throw;				//todo: handle
 				}
 			}
 
