@@ -19,7 +19,8 @@ namespace Infra.ControllersTree.Settings
 			return CreateRunner<TController, TPayload, TResult>(parentControllerRunner, controller);
 		}
 
-		public IControllerRunner<TPayload, TResult> GetRunner<TPayload, TResult>(IControllerRunnerBase parentControllerRunner,
+		public IControllerRunner<TPayload, TResult> GetRunner<TPayload, TResult>(
+			IControllerRunnerBase parentControllerRunner,
 			Func<IBaseController> factory)
 		{
 			var controller = factory.Invoke();
@@ -28,15 +29,23 @@ namespace Infra.ControllersTree.Settings
 
 			var instance = factory.Invoke();
 			var baseType = instance.GetType();
-			var genericTypes = baseType.GetInterfaces()
-				.First(inter => inter.Name.Contains("IControllerWithPayloadAndReturn")).GenericTypeArguments;
-			var generics = new Type[genericTypes.Length + 1];
-			generics[0] = baseType;
-			genericTypes.CopyTo(generics, 1);
 
-			var mi = typeof(DefaultControllerSettings).GetMethods().First(info => info.Name == nameof(CreateRunner));
-			var methodRef = mi.MakeGenericMethod(generics);
-			return (IControllerRunner<TPayload, TResult>)methodRef.Invoke(this, new object[] { parentControllerRunner, instance });
+			var controllerInterface = baseType.GetInterfaces()
+				.FirstOrDefault(i =>
+					i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControllerWithPayloadAndReturn<,>));
+
+			if (controllerInterface == null)
+				throw new ControllerException($"{baseType.Name} does not implement IControllerWithPayloadAndReturn<,>");
+
+			var mi = typeof(DefaultControllerSettings).GetMethods(
+					System.Reflection.BindingFlags.Instance |
+					System.Reflection.BindingFlags.NonPublic |
+					System.Reflection.BindingFlags.Public)
+				.First(info => info.Name == nameof(CreateRunner));
+
+			var fooRef = mi.MakeGenericMethod(baseType, typeof(TPayload), typeof(TResult));
+			return (IControllerRunner<TPayload, TResult>)fooRef.Invoke(this,
+				new object[] { parentControllerRunner, instance });
 		}
 
 		private IControllerRunner<TPayload, TResult> CreateRunner<TController, TPayload, TResult>(

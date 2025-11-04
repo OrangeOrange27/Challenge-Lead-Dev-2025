@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Common.ConfigSystem;
 using Common.Minigames;
 using Common.Minigames.Models;
@@ -87,36 +88,23 @@ namespace Core.Hub
             return UniTask.CompletedTask;
         }
 
-        private async UniTask SpawnMinigameViews(List<MinigameModel> models, IControllerResources resources, CancellationToken token)
+        private async UniTask SpawnMinigameViews(List<MinigameModel> models, IControllerResources resources,
+            CancellationToken token)
         {
-            foreach (var model in models)
-            {
-                var view = await CreateMinigameView(model, resources, token);
-                if (view == null)
-                {
-                    Debug.LogError($"Failed to create minigame view for minigame: {model.Id}");
-                    continue;
-                }
-
-                view.OnClick += OnClickHandler;
-                _clickHandlers[view] = OnClickHandler;
-                
-                _minigameViews.Add(view);
-                
-                continue;
-            
-                void OnClickHandler()
-                {
-                    Debug.Log($"Minigame clicked: {model.Id}");
-                    OnMinigameClick(model.Id);
-                }
-            }
+            await UniTask.WhenAll(Enumerable.Select(models, model => CreateMinigameView(model, resources, token)));
         }
 
-        private async UniTask<IMinigameItemView> CreateMinigameView(MinigameModel model, IControllerResources resources,
+        private async UniTask CreateMinigameView(MinigameModel model, IControllerResources resources,
             CancellationToken token)
         {
             var view = await _minigamesItemViewLoader.Load(resources, token, _hubView.MinigamesHolder);
+
+            if (view == null)
+            {
+                Debug.LogError($"Failed to create minigame view for minigame: {model.Id}");
+                return;
+            }
+
             var icon = await _assetProvider.LoadAsync<Sprite>(model.IconId, token);
 
             if (icon == null)
@@ -124,7 +112,19 @@ namespace Core.Hub
                 Debug.LogError($"Minigame icon not found: {model.IconId}");
             }
 
-            return view;
+            view.SetImage(icon);
+            view.OnClick += OnClickHandler;
+            _clickHandlers[view] = OnClickHandler;
+
+            _minigameViews.Add(view);
+
+            return;
+
+            void OnClickHandler()
+            {
+                Debug.Log($"Minigame clicked: {model.Id}");
+                OnMinigameClick(model.Id);
+            }
         }
 
         private void OnMinigameClick(string id)

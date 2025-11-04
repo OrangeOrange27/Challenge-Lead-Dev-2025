@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: db05684360b39e74d8d153fda745a50a
   m_SerializeEntries:
+  - m_GUID: 435c158325fdd2242a25c19ff6e5baa4
+    m_Address: match_minigame_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e10c5527ccd55b645813754ba650e8d5
     m_Address: MinigameItemView
     m_ReadOnly: 0

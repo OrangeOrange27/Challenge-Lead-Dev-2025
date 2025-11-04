@@ -1,5 +1,6 @@
 ﻿using Common.Minigames;
 using Core.Hub;
+using Core.Hub.States;
 using Core.Hub.UI;
 using Core.SplashScreen;
 using Infra;
@@ -59,6 +60,7 @@ namespace Core.EntryPoint
         private void RegisterHub(IContainerBuilder builder)
         {
             builder.RegisterController<RootHubState>();
+            builder.RegisterController<MinigameLoadingState>();
 
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
             builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");

@@ -19,8 +19,9 @@ namespace Core.Hub.UI
 
         public void SetImage(Sprite sprite)
         {
-            _loadingIndicator.SetActive(false);
             _mainImage.sprite = sprite;
+            _mainImage.gameObject.SetActive(true);
+            _loadingIndicator.SetActive(false);
         }
 
         private void OnDestroy()

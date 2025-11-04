@@ -3,7 +3,7 @@
     {
       "Id": "match_minigame",
       "Name": "Magic Match",
-      "IconId": "match_icon",
+      "IconId": "match_minigame_icon",
       "Modes": [
         {
           "Prizes": [
