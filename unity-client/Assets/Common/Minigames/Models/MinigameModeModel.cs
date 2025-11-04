@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using Common.Models.Economy;
 
-namespace Common.Models
+namespace Common.Minigames.Models
 {
     public class MinigameModeModel
     {

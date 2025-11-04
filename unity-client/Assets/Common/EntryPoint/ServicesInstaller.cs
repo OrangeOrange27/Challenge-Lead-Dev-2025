@@ -1,4 +1,5 @@
-﻿using Core.Hub;
+﻿using Common.Minigames;
+using Core.Hub;
 using Core.Hub.UI;
 using Core.SplashScreen;
 using Infra;
@@ -44,6 +45,7 @@ namespace Core.EntryPoint
             builder.RegisterConfig<MinigamesConfig>("minigames_config"); //todo: add remote link
             
             RegisterHub(builder);
+            RegisterMinigames(builder);
         }
         
         private void RegisterControllersTree(IContainerBuilder builder)
@@ -60,6 +62,11 @@ namespace Core.EntryPoint
 
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
             builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
+        }
+
+        private void RegisterMinigames(IContainerBuilder builder)
+        {
+            builder.RegisterMinigames();
         }
 
         private void RegisterDataProvider(IContainerBuilder builder)

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Common.ConfigSystem;
+using Common.Minigames;
+using Common.Minigames.Models;
 using Common.Models;
 using Core.Hub.States;
 using Core.Hub.UI;
@@ -126,8 +129,15 @@ namespace Core.Hub
 
         private void OnMinigameClick(string id)
         {
+            var minigameModel = _minigamesConfigProvider.Get().Minigames.FirstOrDefault(m => m.Id == id);
+            if (minigameModel == null)
+            {
+                Debug.LogError($"Minigame model not found for id: {id}");
+                return;
+            }
+
             _machineInstructionCompletionSource.TrySetResult(
-                StateMachineInstructionSugar.GoTo<MinigameLoadingState, string>(_resolver, id));
+                StateMachineInstructionSugar.GoTo<MinigameLoadingState, MinigameModel>(_resolver, minigameModel));
         }
     }
 }

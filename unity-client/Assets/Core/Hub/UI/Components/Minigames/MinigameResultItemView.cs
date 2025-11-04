@@ -1,4 +1,5 @@
-﻿using Common.Models;
+﻿using Common.Minigames.Models;
+using Common.Models;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

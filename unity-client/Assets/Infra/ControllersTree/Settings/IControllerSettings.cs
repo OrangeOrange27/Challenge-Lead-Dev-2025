@@ -12,5 +12,8 @@ namespace Infra.ControllersTree.Settings
         IControllerRunner<TPayload, TResult> GetRunner<TController, TPayload, TResult>(
             IControllerRunnerBase parentControllerRunner, Func<TController> factory)
             where TController : IControllerWithPayloadAndReturn<TPayload, TResult>;
+
+        IControllerRunner<TPayload, TResult> GetRunner<TPayload, TResult>(IControllerRunnerBase parentControllerRunner,
+            Func<IBaseController> factory);
     }
 }

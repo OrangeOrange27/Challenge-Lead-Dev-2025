@@ -31,6 +31,15 @@ namespace Infra.ControllersTree.Implementations
             return runner;
         }
 
+        public IControllerRunner<TPayload, TResult> Create<TPayload, TResult>(Func<IBaseController> factory)
+        {
+            if (factory == null)
+                throw new ControllerException("Factory is null");
+            var runner = _controllerSettings.GetRunner<TPayload, TResult>(_parentRunner, factory);
+            ChildRunners.Add(runner);
+            return runner;
+        }
+
         public IEnumerable<IControllerRunnerBase> GetChildrenRunners(IBaseController controller)
         {
             return _childRunners == null ? Enumerable.Empty<IControllerRunnerBase>() : ChildRunners;

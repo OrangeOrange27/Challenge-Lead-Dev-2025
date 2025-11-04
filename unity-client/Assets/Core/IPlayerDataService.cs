@@ -2,6 +2,7 @@
 using Common;
 using Common.Authentication.Providers;
 using Common.Models;
+using Common.Models.Economy;
 using Cysharp.Threading.Tasks;
 
 namespace Core

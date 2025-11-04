@@ -1,9 +1,9 @@
 {
   "Minigames": [
     {
-      "Id": "dots",
-      "Name": "Dots",
-      "IconId": "dots_icon",
+      "Id": "match_minigame",
+      "Name": "Magic Match",
+      "IconId": "match_icon",
       "Modes": [
         {
           "Prizes": [

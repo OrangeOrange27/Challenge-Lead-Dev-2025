@@ -7,6 +7,8 @@ namespace Infra.ControllersTree.Abstractions
     {
         IControllerRunner<TPayload, TResult> Create<TController, TPayload, TResult>(Func<TController> factory)
             where TController : IControllerWithPayloadAndReturn<TPayload, TResult>;
+
+        IControllerRunner<TPayload, TResult> Create<TPayload, TResult>(Func<IBaseController> factory);
         
         IEnumerable<IControllerRunnerBase> GetChildrenRunners(IBaseController controller);
     }

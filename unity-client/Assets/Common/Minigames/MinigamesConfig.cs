@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Common.ConfigSystem;
-using Common.Models;
+using Common.Minigames.Models;
 
-namespace Minigames
+namespace Common.Minigames
 {
     public class MinigamesConfig : BaseConfig
     {

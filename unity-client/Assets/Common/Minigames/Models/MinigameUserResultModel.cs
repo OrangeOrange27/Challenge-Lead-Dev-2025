@@ -1,4 +1,6 @@
-﻿namespace Common.Models
+﻿using Common.Models.Economy;
+
+namespace Common.Minigames.Models
 {
     public class MinigameUserResultModel
     {
