@@ -405,6 +405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Minigames.Match.MatchMinigameView
   _playingField: {fileID: 1265409387627018420}
   _target: {fileID: 4363627235752263094}
+  _text: {fileID: 637279816090663079}
 --- !u!1 &7103758710157807204
 GameObject:
   m_ObjectHideFlags: 0

@@ -39,8 +39,6 @@ namespace Minigames.Match
             CancellationToken token)
         {
             _view = await _viewLoader.Load(resources, token, null);
-
-            _view.Target.position = UiUtils.GetRandomScreenPosition(_view.PlayingField, _view.Target.sizeDelta);
         }
 
         public async UniTask<MinigameResult> Execute(IControllerResources resources,
@@ -50,10 +48,13 @@ namespace Minigames.Match
             await UniTask.Delay(TimeSpan.FromSeconds(waitingTime), cancellationToken: token);
 
             var startTime = DateTime.UtcNow;
+            _view.Target.anchoredPosition = UiUtils.GetRandomScreenPosition(_view.PlayingField, _view.Target.sizeDelta);
             _view.Target.gameObject.SetActive(true);
+            _view.Text.text = "GO!!!";
 
             var inputPos = await InputUtils.WaitForPlayerInputAsync(token);
             var reactionTime = (DateTime.UtcNow - startTime).TotalSeconds;
+            _view.Text.text = $"Reaction Time: {reactionTime:F3} s";
 
             await UniTask.WaitForSeconds(DelayAfterTouch, cancellationToken: token);
 

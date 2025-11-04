@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 namespace Minigames.Match
 {
@@ -6,5 +7,6 @@ namespace Minigames.Match
     {
         RectTransform PlayingField { get; }
         RectTransform Target { get; }
+        TMP_Text Text { get; }
     }
 }
