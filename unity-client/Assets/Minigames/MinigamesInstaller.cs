@@ -2,6 +2,7 @@
 using Common.Minigames;
 using Common.Minigames.Models;
 using Core.EntryPoint;
+using Infra.AssetManagement.ViewLoader;
 using Minigames.Match;
 using VContainer;
 
@@ -23,6 +24,9 @@ namespace Minigames
                     _ => throw new ArgumentException($"Unknown minigame {model.Id}")
                 };
             }, Lifetime.Transient);
+            
+            
+            builder.RegisterViewLoader<IMatchMinigameView, MatchMinigameView>("match_minigame_view");
         }
     }
 }
