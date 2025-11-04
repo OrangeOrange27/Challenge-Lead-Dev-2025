@@ -11,7 +11,7 @@ using VContainer;
 
 namespace Common.Minigames
 {
-    public class RootMinigameController : IStateController<MinigameModel>
+    public class RootMinigameController : IStateController<MinigameBootstrapPayload>
     {
         private readonly IObjectResolver _resolver;
         private readonly Func<MinigameModel, IMinigameFlow> _flowFactory;
@@ -29,11 +29,11 @@ namespace Common.Minigames
             return UniTask.CompletedTask;
         }
 
-        public UniTask OnStart(MinigameModel payload, IControllerResources resources,
+        public UniTask OnStart(MinigameBootstrapPayload payload, IControllerResources resources,
             IControllerChildren controllerChildren,
             CancellationToken token)
         {
-            _minigameModel = payload;
+            _minigameModel = payload.MinigameModel;
 
             return UniTask.CompletedTask;
         }

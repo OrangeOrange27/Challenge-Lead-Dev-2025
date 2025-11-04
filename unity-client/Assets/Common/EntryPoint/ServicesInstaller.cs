@@ -1,7 +1,9 @@
-﻿using Common.Minigames;
+﻿using Common;
+using Common.Minigames;
 using Core.Hub;
 using Core.Hub.States;
 using Core.Hub.UI;
+using Core.Hub.Views;
 using Core.SplashScreen;
 using Infra;
 using Infra.AssetManagement.AssetProvider;
@@ -42,9 +44,9 @@ namespace Core.EntryPoint
             builder.RegisterSelfFactory<IAssetProvider>();
 
             builder.RegisterInstance(_splashSceneView);
-
-            builder.RegisterConfig<MinigamesConfig>("minigames_config"); //todo: add remote link
             
+            builder.Register<GameContext>(Lifetime.Singleton).AsSelf();
+
             RegisterHub(builder);
             RegisterMinigames(builder);
         }
@@ -60,14 +62,19 @@ namespace Core.EntryPoint
         private void RegisterHub(IContainerBuilder builder)
         {
             builder.RegisterController<RootHubState>();
+            builder.RegisterController<MinigameSelectModeState>();
             builder.RegisterController<MinigameLoadingState>();
-
+            
             builder.RegisterViewLoader<IHubView, HubView>("HubView");
             builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
+            builder.RegisterViewLoader<IMinigameModesView, MinigameModesView>("MinigameModesView");
+            builder.RegisterViewLoader<IMinigameModeItemView, MinigameModeItemView>("MinigameModeItemView");
         }
 
         private void RegisterMinigames(IContainerBuilder builder)
         {
+            builder.RegisterConfig<MinigamesConfig>("minigames_config"); //todo: add remote link
+
             builder.RegisterMinigames();
         }
 

@@ -15,8 +15,18 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: db05684360b39e74d8d153fda745a50a
   m_SerializeEntries:
+  - m_GUID: 38a22e04727ea454289192ab682ee70b
+    m_Address: MinigameModeItemView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 435c158325fdd2242a25c19ff6e5baa4
     m_Address: match_minigame_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e02759a4cb8bdc49a78868c52fed93a
+    m_Address: MinigameModesView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -13,6 +13,11 @@ namespace Core.Hub.UI
         [SerializeField] private GemsText _gemsAmountText;
         [SerializeField] private CashText _cashAmountText;
         
+        public void Set(RewardModel reward)
+        {
+            Set(reward.CurrencyType, reward.Amount);
+        }
+        
         public void Set(CurrencyType currencyType, float amount)
         {
             _gemsAmountText.gameObject.SetActive(currencyType == CurrencyType.Gems);

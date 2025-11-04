@@ -268,6 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c5e11355494d11b099861dd4e17008, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.HubView
+  _mainPanel: {fileID: 2113730927532017079}
   _minigamesHolder: {fileID: 1989534336637514885}
 --- !u!1 &7533519962170527123
 GameObject:

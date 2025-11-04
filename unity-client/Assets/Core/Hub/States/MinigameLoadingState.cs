@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using System.Threading;
-using Common.ConfigSystem;
+﻿using System.Threading;
 using Common.Minigames;
-using Common.Minigames.Models;
 using Cysharp.Threading.Tasks;
 using Infra;
 using Infra.ControllersTree.Abstractions;
@@ -11,15 +8,15 @@ using VContainer;
 
 namespace Core.Hub.States
 {
-    public class MinigameLoadingState : IStateController<MinigameModel>
+    public class MinigameLoadingState : IStateController<MinigameBootstrapPayload>
     {
         private readonly IObjectResolver _resolver;
-        private readonly IConfigProvider<MinigamesConfig> _configProvider;
+
+        private MinigameBootstrapPayload _payload; 
         
-        public MinigameLoadingState(IObjectResolver resolver, IConfigProvider<MinigamesConfig> configProvider)
+        public MinigameLoadingState(IObjectResolver resolver)
         {
             _resolver = resolver;
-            _configProvider = configProvider;
         }
         
         public UniTask OnInitialize(IControllerResources resources, CancellationToken token)
@@ -27,17 +24,17 @@ namespace Core.Hub.States
             return UniTask.CompletedTask;
         }
         
-        public UniTask OnStart(MinigameModel payload, IControllerResources resources, IControllerChildren controllerChildren,
+        public UniTask OnStart(MinigameBootstrapPayload payload, IControllerResources resources, IControllerChildren controllerChildren,
             CancellationToken token)
         {
+            _payload = payload;
+            
             return UniTask.CompletedTask;
         }
 
         public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources, IControllerChildren controllerChildren, CancellationToken token)
         {
-            var model = _configProvider.Get().Minigames.FirstOrDefault(); //todo: replace with proper model
-            
-            return StateMachineInstructionSugar.GoTo<RootMinigameController, MinigameModel>(_resolver, model);
+            return StateMachineInstructionSugar.GoTo<RootMinigameController, MinigameBootstrapPayload>(_resolver, _payload);
         }
 
         public UniTask OnStop(CancellationToken token)
