@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Common.Models;
 using Common.Models.Economy;
@@ -79,7 +80,8 @@ namespace Core.Hub.States
 
         private async UniTask SpawnParticipantsScoreItemViews(CancellationToken token)
         {
-            var sortedParticipants = _payload.Participants
+            var participants = new List<MinigameParticipantModel>(_payload.Participants) { _payload.LocalPlayer };
+            var sortedParticipants = participants
                 .OrderByDescending(participant => participant.Result.TotalPoints);
             
             await UniTask.WhenAll(Enumerable.Select(sortedParticipants,

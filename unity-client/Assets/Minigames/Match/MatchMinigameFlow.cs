@@ -76,21 +76,21 @@ namespace Minigames.Match
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 _view.PlayingField,
                 inputPosition,
-                Camera.main,
-                out var inputPointOnField
+                null,
+                out var localInputPoint
             );
 
-            var pointsForPrecision = CalculatePrecisionPoints(_view.Target.anchoredPosition, inputPointOnField);
-            var pointsForReaction = CalculateReactionPoints((float)reactionTime);
+            float precisionPoints = CalculatePrecisionPoints(_view.Target.anchoredPosition, localInputPoint);
+            float reactionPoints = CalculateReactionPoints((float)reactionTime);
 
             return new MinigameResult
             {
-                PointsForPrecision = pointsForPrecision,
-                PointsForReaction = pointsForReaction,
+                PointsForPrecision = Mathf.RoundToInt(precisionPoints),
+                PointsForReaction = Mathf.RoundToInt(reactionPoints)
             };
         }
 
-        private static int CalculatePrecisionPoints(Vector2 pointA, Vector2 pointB, float falloff = 100f)
+        private static int CalculatePrecisionPoints(Vector2 pointA, Vector2 pointB, float falloff = 400f)
         {
             var distance = Vector2.Distance(pointA, pointB);
             var score = MaxPointsForPrecision * Mathf.Exp(-distance / falloff);

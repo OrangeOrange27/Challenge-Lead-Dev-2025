@@ -51,7 +51,7 @@ namespace Core.Hub.UI.Components
 
         private void SetIcon(bool isHighlighted)
         {
-            var iconIndex = isHighlighted ? 0 : 1;
+            var iconIndex = isHighlighted ? 2 : 1;
             for (var i = 0; i < _icons.Length; i++)
             {
                 _icons[i].gameObject.SetActive(iconIndex == i);
