@@ -4,14 +4,18 @@ namespace Common.Utils
 {
     public static class UiUtils
     {
-        public static Vector2 GetRandomScreenPosition(RectTransform rect, Vector2 elementSize)
+        public static Vector2 GetRandomLocalPosition(RectTransform parentRect, RectTransform element)
         {
-            Vector2 canvasSize = rect.rect.size;
+            Vector2 parentSize = parentRect.rect.size;
+            Vector2 elementSize = element.rect.size;
 
-            float minX = elementSize.x / 2f;
-            float maxX = canvasSize.x - elementSize.x / 2f;
-            float minY = elementSize.y / 2f;
-            float maxY = canvasSize.y - elementSize.y / 2f;
+            float halfW = elementSize.x / 2f;
+            float halfH = elementSize.y / 2f;
+
+            float minX = -parentSize.x / 2f + halfW;
+            float maxX =  parentSize.x / 2f - halfW;
+            float minY = -parentSize.y / 2f + halfH;
+            float maxY =  parentSize.y / 2f - halfH;
 
             float x = Random.Range(minX, maxX);
             float y = Random.Range(minY, maxY);

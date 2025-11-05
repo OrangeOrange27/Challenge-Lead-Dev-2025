@@ -48,7 +48,7 @@ namespace Minigames.Match
             await UniTask.Delay(TimeSpan.FromSeconds(waitingTime), cancellationToken: token);
 
             var startTime = DateTime.UtcNow;
-            _view.Target.anchoredPosition = UiUtils.GetRandomScreenPosition(_view.PlayingField, _view.Target.sizeDelta);
+            _view.Target.anchoredPosition = UiUtils.GetRandomLocalPosition(_view.PlayingField, _view.Target);
             _view.Target.gameObject.SetActive(true);
             _view.Text.text = "GO!!!";
 
