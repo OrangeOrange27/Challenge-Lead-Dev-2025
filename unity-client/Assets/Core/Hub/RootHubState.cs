@@ -6,6 +6,7 @@ using Common;
 using Common.ConfigSystem;
 using Common.Minigames;
 using Common.Minigames.Models;
+using Common.Models.Economy;
 using Core.Hub.States;
 using Core.Hub.UI;
 using Cysharp.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace Core.Hub
 
         private readonly IObjectResolver _resolver;
         private readonly IAssetProvider _assetProvider;
+        private readonly IPlayerDataService _playerDataService;
         private readonly GameContext _gameContext;
         private readonly IViewLoader<IHubView> _hubViewLoader;
         private readonly IViewLoader<IMinigameItemView> _minigamesItemViewLoader;
@@ -43,6 +45,7 @@ namespace Core.Hub
             IObjectResolver resolver,
             IAssetProvider assetProvider,
             GameContext gameContext,
+            IPlayerDataService playerDataService,
             IViewLoader<IHubView> hubViewLoader,
             IViewLoader<IMinigameItemView> minigamesItemViewLoader,
             IConfigProvider<MinigamesConfig> minigamesConfigProvider)
@@ -50,6 +53,7 @@ namespace Core.Hub
             _resolver = resolver;
             _assetProvider = assetProvider;
             _gameContext = gameContext;
+            _playerDataService = playerDataService;
             _hubViewLoader = hubViewLoader;
             _minigamesItemViewLoader = minigamesItemViewLoader;
             _minigamesConfigProvider = minigamesConfigProvider;
@@ -69,6 +73,10 @@ namespace Core.Hub
             _hubView = await _hubViewLoader.Load(resources, token, null);
 
             _hubView.MinigamesHolder.gameObject.SetActive(true);
+            
+            OnBalanceChanged(PlayerBalanceAssetType.Gems, _playerDataService.PlayerData.Gems);
+            OnBalanceChanged(PlayerBalanceAssetType.Cash, _playerDataService.PlayerData.Cash);
+            _playerDataService.OnBalanceChanged += OnBalanceChanged;
 
             await SpawnMinigameViews(minigamesConfig.Minigames, resources, token);
         }
@@ -84,6 +92,8 @@ namespace Core.Hub
 
         public UniTask OnStop(CancellationToken token)
         {
+            _playerDataService.OnBalanceChanged -= OnBalanceChanged;
+
             _hubView.MinigamesHolder.gameObject.SetActive(false);
 
             ClearClickHandlers();
@@ -177,6 +187,23 @@ namespace Core.Hub
 
             _machineInstructionCompletionSource.TrySetResult(
                 StateMachineInstructionSugar.GoTo<MinigameLoadingState, MinigameBootstrapPayload>(_resolver, payload));
+        }
+
+        private void OnBalanceChanged(PlayerBalanceAssetType assetType, int amount)
+        {
+            switch(assetType)
+            {
+                case PlayerBalanceAssetType.Gems:
+                    _hubView.TopPanel.UpdateGems(amount);
+                    break;
+                case PlayerBalanceAssetType.Cash:
+                    _hubView.TopPanel.UpdateBalance(amount);
+                    break;
+                case PlayerBalanceAssetType.Xp:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(assetType), assetType, null);
+            }
         }
 
         private void ClearClickHandlers()

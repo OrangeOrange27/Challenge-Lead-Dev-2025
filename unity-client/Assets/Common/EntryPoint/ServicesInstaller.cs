@@ -48,6 +48,8 @@ namespace Core.EntryPoint
 
             builder.RegisterInstance(_splashSceneView);
             
+            builder.Register<IPlayerDataService, PlayerDataService>(Lifetime.Singleton);
+            
             builder.Register<GameContext>(Lifetime.Singleton).AsSelf();
 
             RegisterHub(builder);

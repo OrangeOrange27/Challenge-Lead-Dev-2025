@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using Common.Authentication.Providers;
 using Core.Hub;
 using Core.SplashScreen;
 using Cysharp.Threading.Tasks;
@@ -17,10 +18,12 @@ namespace Core.EntryPoint
         private readonly IObjectResolver _objectResolver;
         
         private readonly SplashSceneView _splashSceneView;
+        private readonly IPlayerDataService _playerDataService;
 
-        public RootController(IObjectResolver objectResolver, SplashSceneView splashSceneView)
+        public RootController(IObjectResolver objectResolver, IPlayerDataService playerDataService, SplashSceneView splashSceneView)
         {
             _objectResolver = objectResolver;
+            _playerDataService = playerDataService;
             _splashSceneView = splashSceneView;
         }
 
@@ -47,9 +50,10 @@ namespace Core.EntryPoint
             
             await controllerChildren.Create<InitializeGameBeforeAuthController, EmptyPayloadType, EmptyPayloadType>(_objectResolver)
                 .RunToDispose(default, token);
-            
+
             // todo: auth here
-            
+            _playerDataService.LoginWithProvider(AuthProvider.Guest);
+
             await controllerChildren.Create<InitializeGameAfterAuthController, EmptyPayloadType, EmptyPayloadType>(_objectResolver)
                 .RunToDispose(default, token);
             

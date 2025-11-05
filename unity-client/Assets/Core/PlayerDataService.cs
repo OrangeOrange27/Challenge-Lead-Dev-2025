@@ -23,6 +23,11 @@ namespace Core
         public PlayerData PlayerData { get; private set; }
         
         public event Action<PlayerBalanceAssetType, int> OnBalanceChanged;
+        
+        public PlayerDataService(IDataProvider playerDataProvider)
+        {
+            _playerDataProvider = playerDataProvider;
+        }
 
         public IDisposable Update()
         {
