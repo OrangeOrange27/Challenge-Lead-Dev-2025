@@ -2,9 +2,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Core.Hub.Views
+namespace Core.Hub.Views.Minigame.MinigameResults
 {
-    public class MinigameResultsView : MonoBehaviour
+    public class MinigameResultsView : MonoBehaviour, IMinigameResultsView
     {
         [SerializeField] private Image _minigameIcon;
         [SerializeField] private Image _minigameBackground;

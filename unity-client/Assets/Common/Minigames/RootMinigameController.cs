@@ -16,7 +16,7 @@ namespace Common.Minigames
         private readonly IObjectResolver _resolver;
         private readonly Func<MinigameModel, IMinigameFlow> _flowFactory;
 
-        private MinigameModel _minigameModel;
+        private MinigameBootstrapPayload _minigameModel;
 
         public RootMinigameController(IObjectResolver resolver, Func<MinigameModel, IMinigameFlow> flowFactory)
         {
@@ -33,7 +33,7 @@ namespace Common.Minigames
             IControllerChildren controllerChildren,
             CancellationToken token)
         {
-            _minigameModel = payload.MinigameModel;
+            _minigameModel = payload;
 
             return UniTask.CompletedTask;
         }
@@ -42,9 +42,16 @@ namespace Common.Minigames
             IControllerChildren controllerChildren, CancellationToken token)
         {
             var result = await controllerChildren.Create<MinigameModel, MinigameResult>(ConvertFactory(_flowFactory))
-                .RunToDispose(_minigameModel, token);
+                .RunToDispose(_minigameModel.MinigameModel, token);
 
-            return StateMachineInstructionSugar.ExitTo<MinigameCompletionState, MinigameResult>(_resolver, result);
+            var minigameCompletionPayload = new MinigameCompletionPayload()
+            {
+                MinigameIcon = _minigameModel.MinigameIcon,
+                Result = result
+            };
+
+            return StateMachineInstructionSugar.GoTo<MinigameCompletionState, MinigameCompletionPayload>(_resolver,
+                minigameCompletionPayload);
         }
 
         public UniTask OnStop(CancellationToken token)
@@ -60,7 +67,7 @@ namespace Common.Minigames
         private Func<IMinigameFlow> ConvertFactory(Func<MinigameModel, IMinigameFlow> flowFactory)
         {
             var model = _minigameModel;
-            return () => flowFactory(model);
+            return () => flowFactory(model.MinigameModel);
         }
     }
 }

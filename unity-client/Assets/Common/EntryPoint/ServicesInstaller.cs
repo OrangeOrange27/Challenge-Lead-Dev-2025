@@ -4,6 +4,8 @@ using Core.Hub;
 using Core.Hub.States;
 using Core.Hub.UI;
 using Core.Hub.Views;
+using Core.Hub.Views.Minigame.MinigameCompletion;
+using Core.Hub.Views.Minigame.MinigameResults;
 using Core.SplashScreen;
 using Infra;
 using Infra.AssetManagement.AssetProvider;
@@ -74,6 +76,12 @@ namespace Core.EntryPoint
         private void RegisterMinigames(IContainerBuilder builder)
         {
             builder.RegisterConfig<MinigamesConfig>("minigames_config"); //todo: add remote link
+            
+            builder.RegisterController<MinigameCompletionState>();
+            builder.RegisterController<MinigameResultsState>();
+            
+            builder.RegisterViewLoader<IMinigameCompletionView, MinigameCompletionView>("MinigameCompletionView");
+            builder.RegisterViewLoader<IMinigameResultsView, MinigameResultsView>("MinigameResultsView");
 
             builder.RegisterMinigames();
         }

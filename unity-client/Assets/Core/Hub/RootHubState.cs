@@ -134,7 +134,7 @@ namespace Core.Hub
             {
                 Debug.Log($"Minigame clicked: {model.Id}");
 
-                _gameContext.SelectMinigame(model);
+                _gameContext.SelectMinigame(model, icon);
 
                 OnMinigameClick(model.Id, icon, token).Forget();
             }

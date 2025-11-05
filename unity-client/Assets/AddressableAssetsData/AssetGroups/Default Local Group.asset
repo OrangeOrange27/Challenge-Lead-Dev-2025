@@ -20,13 +20,13 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 435c158325fdd2242a25c19ff6e5baa4
-    m_Address: match_minigame_icon
+  - m_GUID: 7e02759a4cb8bdc49a78868c52fed93a
+    m_Address: MinigameModesView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7e02759a4cb8bdc49a78868c52fed93a
-    m_Address: MinigameModesView
+  - m_GUID: 91d7f031b2f8fa548a6757b16ea1c1f4
+    m_Address: MinigameCompletionView
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

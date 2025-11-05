@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Minigames
   m_GUID: e3054d3cc304e1a4e856e0412503847b
   m_SerializeEntries:
+  - m_GUID: 40866b02628efcc429dd95cd41e03a62
+    m_Address: match_minigame_icon
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccfddb5714547e141b913779c4c91624
     m_Address: match_minigame_view
     m_ReadOnly: 0

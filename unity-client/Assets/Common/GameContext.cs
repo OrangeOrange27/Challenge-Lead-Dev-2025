@@ -1,5 +1,6 @@
 ﻿using Common.Minigames.Models;
 using Core.Hub.States;
+using UnityEngine;
 
 namespace Common
 {
@@ -9,9 +10,10 @@ namespace Common
 
         public MinigameBootstrapPayload SelectedMinigameConfiguration => _selectedMinigameConfiguration;
 
-        public void SelectMinigame(MinigameModel minigameModel)
+        public void SelectMinigame(MinigameModel minigameModel, Sprite Icon)
         {
             _selectedMinigameConfiguration.MinigameModel = minigameModel;
+            _selectedMinigameConfiguration.MinigameIcon = Icon;
         }
         
         public void SelectMode(MinigameModeModel modeModel)
