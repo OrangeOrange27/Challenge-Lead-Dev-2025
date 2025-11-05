@@ -3,6 +3,7 @@ using Common.Minigames;
 using Core.Hub;
 using Core.Hub.States;
 using Core.Hub.UI;
+using Core.Hub.UI.Components;
 using Core.Hub.Views;
 using Core.Hub.Views.Minigame.MinigameCompletion;
 using Core.Hub.Views.Minigame.MinigameResults;
@@ -71,6 +72,7 @@ namespace Core.EntryPoint
             builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
             builder.RegisterViewLoader<IMinigameModesView, MinigameModesView>("MinigameModesView");
             builder.RegisterViewLoader<IMinigameModeItemView, MinigameModeItemView>("MinigameModeItemView");
+            builder.RegisterViewLoader<IScoreItemView, ScoreItemView>("ScoreItemView");
         }
 
         private void RegisterMinigames(IContainerBuilder builder)

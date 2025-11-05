@@ -12,6 +12,23 @@ namespace Core.Hub.Views.Minigame.MinigameResults
         
         [SerializeField] private Button _closeButton;
         
-        public event Action _onCloseButtonClicked;
+        public event Action OnCloseButtonClicked;
+        
+        public Transform LeaderboardContent => _leaderboardContent;
+        
+        public void SetIcon(Sprite icon)
+        {
+            _minigameIcon.sprite = icon;
+        }
+
+        private void Awake()
+        {
+            _closeButton.onClick.AddListener(() => OnCloseButtonClicked?.Invoke());
+        }
+
+        private void OnDestroy()
+        {
+            _closeButton.onClick.RemoveAllListeners();
+        }
     }
 }
