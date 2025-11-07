@@ -22,7 +22,7 @@ namespace Core
         public bool IsSignedIn { get; private set; }
         public PlayerData PlayerData { get; private set; }
         
-        public event Action<PlayerBalanceAssetType, int> OnBalanceChanged;
+        public event Action<CurrencyType, int> OnBalanceChanged;
         
         public PlayerDataService(IDataProvider playerDataProvider)
         {
@@ -31,7 +31,7 @@ namespace Core
 
         public IDisposable Update()
         {
-            return new Disposable(SavePlayerState);
+            return new Disposable(SavePlayerBalance);
         }
 
         public async UniTask LoginWithProvider(AuthProvider provider)
@@ -41,7 +41,7 @@ namespace Core
             PlayerData.OnBalanceChanged += (type, amount) => OnBalanceChanged?.Invoke(type, amount);
         }
 
-        public void GiveBalance(PlayerBalanceAssetType type, int amount)
+        public void GiveBalance(CurrencyType type, int amount)
         {
             if (amount < 0)
                 return;
@@ -50,7 +50,7 @@ namespace Core
                 PlayerData.ChangeBalance(type, amount);
         }
 
-        public void SpendBalance(PlayerBalanceAssetType type, int amount)
+        public void SpendBalance(CurrencyType type, int amount)
         {
             if (PlayerData.GetBalance(type) < amount)
                 return;
@@ -71,11 +71,14 @@ namespace Core
             IsSignedIn = true;
         }
 
-        private void SavePlayerState()
+        private void SavePlayerBalance()
         {
             SaveLocalPlayer();
 
-            if (_isOnline) _ = ServerAPI.Player.UpdatePlayerDataAsync(PlayerData, PlayerData.AuthToken);
+            if (!_isOnline) return;
+            
+            _ = ServerAPI.Player.UpdatePlayerBalanceAsync(PlayerData.GetBalance(CurrencyType.Gems), CurrencyType.Gems, PlayerData.AuthToken);
+            _ = ServerAPI.Player.UpdatePlayerBalanceAsync(PlayerData.GetBalance(CurrencyType.Cash), CurrencyType.Cash, PlayerData.AuthToken);
         }
 
         private void SaveLocalPlayer()

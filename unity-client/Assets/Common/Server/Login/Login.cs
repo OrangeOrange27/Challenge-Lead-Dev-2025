@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Common.Authentication.Providers;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -9,6 +6,17 @@ namespace Common.Server
 {
     public static partial class ServerAPI
     {
+        public struct LoginData
+        {
+            [JsonProperty("deviceId")] public string DeviceId { get; set; }
+        }
+
+        public struct LoginResponse
+        {
+            [JsonProperty("token")] public string Token { get; set; }
+            [JsonProperty("playerId")] public string PlayerId { get; set; }
+        }
+        
         public class Login
         {
             /// <summary>
@@ -19,56 +27,19 @@ namespace Common.Server
             /// <returns>Returns the server response as a string.</returns>
             public static async UniTask<LoginResponse> LoginAsync(LoginData loginData)
             {
-                string url = $"{BaseUrl}/auth/login";
+                var url = $"{BaseUrl}/auth/login";
+                var jsonBody = JsonConvert.SerializeObject(loginData);
 
-                string jsonBody = JsonConvert.SerializeObject(loginData);
-
-                ResponseModel<LoginResponse> response = await ServerRequest.PostRequest<LoginResponse>(url, jsonBody);
+                var response = await ServerRequest.PostRequest<LoginResponse>(url, jsonBody);
 
                 if (!response.IsSuccess)
                 {
                     Debug.LogError(response.ErrorMessage);
-                    return null;
+                    return default;
                 }
 
                 return response.Data;
             }
-        }
-
-        public struct LoginData
-        {
-            [JsonProperty("authProvider")] public string AuthProvider;
-            [JsonProperty("token")] public string Token;
-            [JsonProperty("extra")] public Dictionary<string, object> Extra;
-
-            public LoginData(AuthProvider authProvider, string token)
-            {
-                AuthProvider = authProvider.ToString().ToLower();
-                Token = token;
-                Extra = new();
-            }
-        }
-
-        public class LoginResponse
-        {
-            [JsonProperty("tokens")] public Tokens Tokens { get; set; }
-
-            public string GetAccessToken()
-            {
-                return Tokens.Access.Token;
-            }
-        }
-
-        public struct Tokens
-        {
-            [JsonProperty("access")] public AccessToken Access { get; set; }
-        }
-
-        public struct AccessToken
-        {
-            [JsonProperty("token")] public string Token { get; set; }
-
-            [JsonProperty("expires")] public DateTime Expires { get; set; }
         }
     }
 }

@@ -9,42 +9,34 @@ namespace Common
     {
         public int Cash { get; set; }
         public int Gems { get; set; }
-        public int Experience { get; set; }
 
-        public event Action<PlayerBalanceAssetType, int> OnBalanceChanged;
+        public event Action<CurrencyType, int> OnBalanceChanged;
 
-        private Dictionary<PlayerBalanceAssetType, (Func<int> get, Action<int> add)> _balanceAccessors =>
+        private Dictionary<CurrencyType, (Func<int> get, Action<int> add)> _balanceAccessors =>
             new()
             {
                 {
-                    PlayerBalanceAssetType.Cash, (() => Cash, value =>
+                    CurrencyType.Cash, (() => Cash, value =>
                     {
                         Cash += value;
-                        OnBalanceChanged?.Invoke(PlayerBalanceAssetType.Cash, Cash);
+                        OnBalanceChanged?.Invoke(CurrencyType.Cash, Cash);
                     })
                 },
                 {
-                    PlayerBalanceAssetType.Gems, (() => Gems, value =>
+                    CurrencyType.Gems, (() => Gems, value =>
                     {
                         Gems += value;
-                        OnBalanceChanged?.Invoke(PlayerBalanceAssetType.Gems, Gems);
-                    })
-                },
-                {
-                    PlayerBalanceAssetType.Xp, (() => Experience, value =>
-                    {
-                        Experience += value;
-                        OnBalanceChanged?.Invoke(PlayerBalanceAssetType.Xp, Experience);
+                        OnBalanceChanged?.Invoke(CurrencyType.Gems, Gems);
                     })
                 }
             };
 
-        public int GetBalance(PlayerBalanceAssetType balanceType)
+        public int GetBalance(CurrencyType balanceType)
         {
             return _balanceAccessors[balanceType].get();
         }
 
-        public void ChangeBalance(PlayerBalanceAssetType balanceType, int amount)
+        public void ChangeBalance(CurrencyType balanceType, int amount)
         {
             _balanceAccessors[balanceType].add(amount);
         }

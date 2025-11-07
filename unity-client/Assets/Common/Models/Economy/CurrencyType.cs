@@ -2,7 +2,7 @@
 {
     public enum CurrencyType
     {
-        Gems = 0,
-        Cash = 1
+        Cash = 0,
+        Gems = 1,
     }
 }

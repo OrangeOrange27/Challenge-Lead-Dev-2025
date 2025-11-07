@@ -12,13 +12,13 @@ namespace Core
         bool IsOnline { get; }
         bool IsSignedIn { get; }
         PlayerData PlayerData { get; }
-        public event Action<PlayerBalanceAssetType, int> OnBalanceChanged;
+        public event Action<CurrencyType, int> OnBalanceChanged;
 
         IDisposable Update();
         UniTask LoginWithProvider(AuthProvider provider);
 
-        void GiveBalance(PlayerBalanceAssetType type, int amount);
-        void SpendBalance(PlayerBalanceAssetType type, int amount);
+        void GiveBalance(CurrencyType type, int amount);
+        void SpendBalance(CurrencyType type, int amount);
 
         int GetPlayerLevel();
     }

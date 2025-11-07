@@ -74,8 +74,8 @@ namespace Core.Hub
 
             _hubView.MinigamesHolder.gameObject.SetActive(true);
             
-            OnBalanceChanged(PlayerBalanceAssetType.Gems, _playerDataService.PlayerData.Gems);
-            OnBalanceChanged(PlayerBalanceAssetType.Cash, _playerDataService.PlayerData.Cash);
+            OnBalanceChanged(CurrencyType.Gems, _playerDataService.PlayerData.Gems);
+            OnBalanceChanged(CurrencyType.Cash, _playerDataService.PlayerData.Cash);
             _playerDataService.OnBalanceChanged += OnBalanceChanged;
 
             await SpawnMinigameViews(minigamesConfig.Minigames, resources, token);
@@ -189,17 +189,15 @@ namespace Core.Hub
                 StateMachineInstructionSugar.GoTo<MinigameLoadingState, MinigameBootstrapPayload>(_resolver, payload));
         }
 
-        private void OnBalanceChanged(PlayerBalanceAssetType assetType, int amount)
+        private void OnBalanceChanged(CurrencyType assetType, int amount)
         {
             switch(assetType)
             {
-                case PlayerBalanceAssetType.Gems:
+                case CurrencyType.Gems:
                     _hubView.TopPanel.UpdateGems(amount);
                     break;
-                case PlayerBalanceAssetType.Cash:
+                case CurrencyType.Cash:
                     _hubView.TopPanel.UpdateBalance(amount);
-                    break;
-                case PlayerBalanceAssetType.Xp:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(assetType), assetType, null);
