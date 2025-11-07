@@ -8,14 +8,12 @@ export interface EnterMatchRequest {
 }
 
 export interface EnterMatchResponse {
-  success: boolean;
   matchId?: string;
   mode?: GameModeType;
   matchState?: MatchState;
   maxPlayers?: number;
   currentPlayers?: number;
   entryFee?: RewardModel;
-  error?: string;
 }
 
 export interface SubmitScoreRequest {
@@ -24,9 +22,6 @@ export interface SubmitScoreRequest {
 }
 
 export interface SubmitScoreResponse {
-  success: boolean;
-  rank?: number;
-  error?: string;
 }
 
 export interface LeaderboardEntry {
@@ -36,12 +31,10 @@ export interface LeaderboardEntry {
 }
 
 export interface GetLeaderboardResponse {
-  success: boolean;
   matchId?: string;
   matchState?: MatchState;
   entries?: LeaderboardEntry[];
   playerEntry?: LeaderboardEntry;
-  error?: string;
 }
 
 export interface ClaimRewardRequest {
@@ -49,11 +42,9 @@ export interface ClaimRewardRequest {
 }
 
 export interface ClaimRewardResponse {
-  success: boolean;
   reward?: RewardModel;
   newBalance?: {
     softCurrency: number;
     hardCurrency: number;
   };
-  error?: string;
 }

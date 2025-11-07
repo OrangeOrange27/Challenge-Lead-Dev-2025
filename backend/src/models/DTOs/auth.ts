@@ -3,8 +3,6 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  success: boolean;
   token?: string;
   playerId?: string;
-  error?: string;
 }

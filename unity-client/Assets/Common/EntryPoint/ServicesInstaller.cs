@@ -47,6 +47,7 @@ namespace Core.EntryPoint
             builder.RegisterSelfFactory<IAssetProvider>();
 
             builder.RegisterInstance(_splashSceneView);
+            builder.Register<GameInitManager>(Lifetime.Singleton);
             
             builder.Register<IPlayerDataService, PlayerDataService>(Lifetime.Singleton);
             

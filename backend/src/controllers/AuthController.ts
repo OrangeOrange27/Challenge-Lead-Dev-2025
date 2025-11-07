@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { AuthService } from "../services/AuthService";
 import { validateBody } from "../middleware/requestValidation";
 import { LoginRequest, LoginResponse } from "../models/DTOs/auth";
+import {ResponseModel} from "../models/responseModel";
 
 const router = Router();
 const authService = new AuthService();
@@ -28,10 +29,12 @@ router.post(
 
             const { token, playerId } = await authService.loginWithDevice(deviceId);
 
-            const response: LoginResponse = {
+            const response: ResponseModel<LoginResponse> = {
                 success: true,
-                token,
-                playerId,
+                data:{
+                    token,
+                    playerId,
+                }
             };
 
             res.status(200).json(response);

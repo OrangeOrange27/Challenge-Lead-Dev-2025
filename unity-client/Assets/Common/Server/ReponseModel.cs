@@ -3,22 +3,25 @@ using UnityEngine;
 
 namespace Common.Server
 {
+    /// <summary>
+    /// Class to match the server's response structure for deserialization.
+    /// </summary>
     public class ResponseModel<T>
     {
         /// <summary>
         /// Indicates whether the API call was successful, based on the "status" field.
         /// </summary>
-        public bool IsSuccess { get; set; }
+        [JsonProperty("success")] public bool IsSuccess { get; set; }
 
         /// <summary>
         /// The data returned from the API, deserialized from the "data" field.
         /// </summary>
-        public T Data { get; set; }
+        [JsonProperty("data")] public T Data { get; set; }
 
         /// <summary>
         /// The error message if the API call failed, based on the "error" field.
         /// </summary>
-        public string ErrorMessage { get; set; }
+        [JsonProperty("error")] public string ErrorMessage { get; set; }
 
         /// <summary>
         /// Static method to create a success response model.
@@ -55,11 +58,11 @@ namespace Common.Server
         /// <returns>A ResponseModel with IsSuccess, Data, and ErrorMessage set appropriately.</returns>
         public static ResponseModel<T> FromServerResponse(string serverResponse)
         {
-            BaseResponse<T> baseResponse;
+            ResponseModel<T> responseModel;
 
             try
             {
-                baseResponse = JsonConvert.DeserializeObject<BaseResponse<T>>(serverResponse);
+                responseModel = JsonConvert.DeserializeObject<ResponseModel<T>>(serverResponse);
             }
             catch (JsonException ex)
             {
@@ -68,26 +71,12 @@ namespace Common.Server
             }
 
 
-            if (baseResponse == null)
+            if (responseModel == null)
             {
                 return Error("Can't deserialize response");
             }
 
-            return baseResponse.Status == "OK" ? Success(baseResponse.Data) : Error(baseResponse.Error);
-        }
-
-        /// <summary>
-        /// Class to match the server's response structure for deserialization.
-        /// </summary>
-        private class BaseResponse<TData>
-        {
-            [JsonProperty("status")] public string Status { get; set; }
-
-            [JsonProperty("error")] public string Error { get; set; }
-
-            [JsonProperty("data")] public TData Data { get; set; }
-
-            [JsonProperty("meta")] public TData Meta { get; set; }
+            return responseModel.IsSuccess ? Success(responseModel.Data) : Error(responseModel.ErrorMessage);
         }
     }
 }

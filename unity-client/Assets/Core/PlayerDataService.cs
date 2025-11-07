@@ -4,9 +4,11 @@ using Common.Authentication.Providers;
 using Common.Models;
 using Common.Models.Economy;
 using Common.Server;
+using Common.Utils;
 using Cysharp.Threading.Tasks;
 using Infra;
 using Infra.Disposables;
+using UnityEngine;
 
 namespace Core
 {
@@ -36,8 +38,33 @@ namespace Core
 
         public async UniTask LoginWithProvider(AuthProvider provider)
         {
-            //todo: no server yet
-            SetOfflinePlayer();
+            var loginData = new ServerAPI.LoginData
+            {
+                DeviceId =  SystemInfo.deviceUniqueIdentifier
+            };
+            
+            var loginResponse = await ServerAPI.Login.LoginAsync(loginData);
+            
+            if (loginResponse.Token.IsNullOrEmpty() || loginResponse.PlayerId.IsNullOrEmpty())
+            {
+                Debug.LogError("Could not login to server. Check above for server errors.");
+                SetOfflinePlayer();
+                return;
+            }
+            
+            _isOnline = true;
+            
+            var authToken = loginResponse.Token;
+            var response = await ServerAPI.Player.GetPlayerDataAsync(authToken);
+            
+            PlayerData = ServerDataAdapter.FromServer(response);
+            SaveLocalPlayer();
+            
+            PlayerData.AuthToken = authToken;
+            
+            Debug.LogFormat("Got player data from server. Data:{0}", PlayerData);
+            IsSignedIn = true;
+            
             PlayerData.OnBalanceChanged += (type, amount) => OnBalanceChanged?.Invoke(type, amount);
         }
 

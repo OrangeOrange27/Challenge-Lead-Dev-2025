@@ -17,14 +17,10 @@ export interface TransactionDto {
 }
 
 export interface GetBalanceResponse {
-  success: boolean;
   softCurrency?: number;
   hardCurrency?: number;
-  error?: string;
 }
 
 export interface GetTransactionsResponse {
-  success: boolean;
   transactions?: TransactionDto[];
-  error?: string;
 }

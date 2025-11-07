@@ -4,6 +4,7 @@ import { GameModesStorage } from "../storages/GameModesStorage";
 import { PlayersStorage } from "../storages/PlayersStorage";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { GetGamesResponse, MinigameDto } from "../models/DTOs/minigame";
+import {ResponseModel} from "../models/responseModel";
 
 const router = Router();
 const gameService = new GameService();
@@ -31,9 +32,11 @@ router.get(
         gameService.gameToDto(game)
       );
 
-      const response: GetGamesResponse = {
+      const response: ResponseModel<GetGamesResponse> = {
         success: true,
-        games: gameDtos,
+        data: {
+          games: gameDtos,
+        },
       };
 
       res.json(response);

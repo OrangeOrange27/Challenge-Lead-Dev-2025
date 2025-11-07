@@ -13,6 +13,7 @@ import {
 } from "../models/DTOs/match";
 import { MatchService } from "../services/MatchService";
 import { validateBody } from "../middleware/requestValidation";
+import {ResponseModel} from "../models/responseModel";
 
 const router = Router();
 const matchService = new MatchService();
@@ -44,13 +45,15 @@ router.post(
 
         const result = await matchService.joinMatch(gameId, playerId, mode);
 
-        const response: EnterMatchResponse = {
+        const response: ResponseModel<EnterMatchResponse> = {
           success: true,
-          matchId: result.match.id,
-          matchState: result.match.matchState,
-          maxPlayers: result.match.mode.maxPlayers,
-          currentPlayers: result.participants,
-          entryFee: result.match.mode.entryFee,
+          data: {
+            matchId: result.match.id,
+            matchState: result.match.matchState,
+            maxPlayers: result.match.mode.maxPlayers,
+            currentPlayers: result.participants,
+            entryFee: result.match.mode.entryFee,
+          }
         };
 
         res.status(200).json(response);
@@ -117,11 +120,13 @@ router.get(
         const { match } = await matchService.fetchMatch(matchId);
         const leaderboard = await leaderboardService.getLeaderboard(matchId);
 
-        const response: GetLeaderboardResponse = {
+        const response: ResponseModel<GetLeaderboardResponse> = {
           success: true,
-          matchId: match.id,
-          matchState: match.matchState,
-          entries: leaderboard.entries,
+          data: {
+            matchId: match.id,
+            matchState: match.matchState,
+            entries: leaderboard.entries,
+          }
         };
 
         res.status(200).json(response);
@@ -155,10 +160,12 @@ router.post(
         const result = await rewardService.claimReward(matchId, playerId);
         const newBalance = await playerDataService.getBalance(playerId);
 
-        const response: ClaimRewardResponse = {
+        const response: ResponseModel<ClaimRewardResponse> = {
           success: true,
-          reward: result.reward.reward,
-          newBalance,
+          data: {
+            reward: result.reward.reward,
+            newBalance: newBalance,
+          }
         };
 
         res.status(200).json(response);

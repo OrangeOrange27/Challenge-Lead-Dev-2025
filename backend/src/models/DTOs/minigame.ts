@@ -4,7 +4,5 @@ export interface MinigameDto {
   iconId?: string;
 }
 export interface GetGamesResponse {
-  success: boolean;
   games?: MinigameDto[];
-  error?: string;
 }

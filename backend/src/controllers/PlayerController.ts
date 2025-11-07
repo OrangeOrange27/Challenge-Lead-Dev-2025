@@ -4,6 +4,7 @@ import {PlayerHistoryService} from "../services/PlayerHistoryService";
 import {authMiddleware} from "../middleware/authMiddleware";
 import {PlayerHistoryResponse, PlayerProfileResponse,} from "../models/DTOs/player";
 import {CurrencyType} from "../models/enums";
+import {ResponseModel} from "../models/responseModel";
 
 const router = Router();
 const playersStorage = new PlayersStorage();
@@ -41,15 +42,17 @@ router.get(
           return;
         }
 
-        const response: PlayerProfileResponse = {
+        const response: ResponseModel<PlayerProfileResponse> = {
           success: true,
-          profile: {
-            playerId: player.id,
-            playerName: player.playerName,
-            softCurrency: player.softCurrency,
-            hardCurrency: player.hardCurrency,
-            createdAt: player.createdAt,
-          },
+          data:{
+            profile: {
+              playerId: player.id,
+              playerName: player.playerName,
+              softCurrency: player.softCurrency,
+              hardCurrency: player.hardCurrency,
+              createdAt: player.createdAt,
+            },
+          }
         };
 
         res.status(200).json(response);
@@ -137,10 +140,12 @@ router.get(
             history.pendingMatches.length +
             history.pastMatches.length;
 
-        const response: PlayerHistoryResponse = {
+        const response: ResponseModel<PlayerHistoryResponse> = {
           success: true,
-          history,
-          total,
+          data:{
+            history,
+            total,  
+          }
         };
 
         res.status(200).json(response);

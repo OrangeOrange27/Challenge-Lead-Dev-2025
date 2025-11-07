@@ -1,7 +1,6 @@
 import {RewardModel} from "./playerBalance";
 
 export interface PlayerProfileResponse {
-  success: boolean;
   profile?: {
     playerId: string;
     playerName?: string;
@@ -9,7 +8,6 @@ export interface PlayerProfileResponse {
     hardCurrency: number;
     createdAt: string;
   };
-  error?: string;
 }
 
 export interface MatchHistoryItem {
@@ -35,8 +33,6 @@ export interface GroupedPlayerHistory {
 }
 
 export interface PlayerHistoryResponse {
-  success: boolean;
   history?: GroupedPlayerHistory;
   total?: number;
-  error?: string;
 }

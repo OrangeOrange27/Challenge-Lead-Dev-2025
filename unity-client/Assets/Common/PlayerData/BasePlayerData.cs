@@ -8,14 +8,12 @@
 
         public string UserName { get; set; }
 
-        public string Email { get; set; }
 
         public override string ToString()
         {
             return "BasePlayerData:\n" +
                    $"ID: {ID}\n" +
-                   $"UserName: {UserName}\n" +
-                   $"Email: {Email}\n";
+                   $"UserName: {UserName}\n";
         }
     }
 }

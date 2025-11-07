@@ -18,11 +18,11 @@ namespace Common.Server
             /// </summary>
             /// <param name="bearerToken">The Bearer token for authorization (access token).</param>
             /// <returns>Returns the player data as a string.</returns>
-            public static async UniTask<T> GetPlayerDataAsync<T>(string bearerToken)
+            public static async UniTask<PlayerProfileResponse> GetPlayerDataAsync(string bearerToken)
             {
                 var url = $"{BaseUrl}/player/profile";
 
-                var response = await ServerRequest.GetRequest<T>(url, bearerToken);
+                var response = await ServerRequest.GetRequest<PlayerProfileResponse>(url, bearerToken);
 
                 if (!response.IsSuccess)
                 {
@@ -48,7 +48,7 @@ namespace Common.Server
                 var payload = new
                 {
                     amount,
-                    currencyType = CurrencyAdapter.ToBackend(currency) // Maps client enum to backend string
+                    currencyType = ServerDataAdapter.ToServer(currency) // Maps client enum to backend string
                 };
 
                 var jsonBody = JsonConvert.SerializeObject(payload);
