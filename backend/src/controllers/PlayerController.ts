@@ -82,8 +82,9 @@ router.patch(
           return;
         }
 
-        const { amount, type } = req.body;
-        if (typeof amount !== "number" || ![CurrencyType.SOFT, CurrencyType.HARD].includes(type)) {
+        const { amount, currencyType} = req.body;
+        
+        if (typeof amount !== "number" || ![CurrencyType.SOFT, CurrencyType.HARD].includes(currencyType)) {
           res.status(400).json({
             success: false,
             error: {
@@ -96,7 +97,7 @@ router.patch(
         }
 
         // Update balance
-        await playersStorage.changeCurrency(playerId, amount, type);
+        await playersStorage.changeCurrency(playerId, amount, currencyType);
 
         const player = await playersStorage.getById(playerId);
 

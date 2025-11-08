@@ -20,10 +20,8 @@ namespace Common.Server.DTOs
     public class EnterMatchResponse
     {
         public string matchId;
-        public string mode; // GameModeType as string
-        public string matchState; // MatchState as string
-        public int maxPlayers;
+        public string matchState;
         public int currentPlayers;
-        public RewardModel entryFee;
+        public GameModeDto mode;
     }
 }

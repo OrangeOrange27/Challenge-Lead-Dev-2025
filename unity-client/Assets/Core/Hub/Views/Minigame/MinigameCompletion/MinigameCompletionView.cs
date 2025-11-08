@@ -31,6 +31,11 @@ namespace Core.Hub.Views.Minigame.MinigameCompletion
             _timeBonus.text = payload.Result.PointsForReaction.ToString();
         }
 
+        public void SetButtonActive(bool isActive)
+        {
+            _continueButton.interactable = isActive;
+        }
+
         private void OnDestroy()
         {
             _continueButton.onClick.RemoveAllListeners();

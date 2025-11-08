@@ -11,7 +11,7 @@ export class MatchStorage {
         const participantsCount = 0;
 
         await runQuery(
-            `INSERT INTO matches (id, game_id, mode, match_state, participants_count, created_at)
+            `INSERT INTO matches (id, game_id, mode_id, match_state, participants_count, created_at)
              VALUES (?, ?, ?, ?, ?, ?)`,
             [
                 id,
@@ -38,27 +38,46 @@ export class MatchStorage {
         const row = await getOne<any>("SELECT * FROM matches WHERE id = ?", [id]);
         if (!row) return undefined;
 
-        return this.mapRowToMatch(row);
+        const modeRow = await getOne<any>("SELECT * FROM gamemodes WHERE id = ?", [row.mode_id]);
+        if (!modeRow) throw new Error(`GameMode not found: ${row.mode_id}`);
+
+        const mode: GameMode = {
+            type: modeRow.id,
+            displayName: modeRow.display_name,
+            maxPlayers: modeRow.max_players,
+            entryFee: JSON.parse(modeRow.entry_fee_json),
+            prizes: JSON.parse(modeRow.prizes_json),
+        };
+
+        return {
+            id: row.id,
+            gameId: row.game_id,
+            mode,
+            matchState: row.match_state,
+            participantsCount: row.participants_count || 0,
+            createdAt: row.created_at,
+            finalizedAt: row.finalized_at || null,
+        };
     }
 
     async getOpenMatch(
         gameId: string,
-        mode: string
+        mode_id: string
     ): Promise<Match | undefined> {
         const row = await getOne<any>(
             `
                 SELECT m.*, gm.max_players, COUNT(p.id) AS participants_count
                 FROM matches m
                          LEFT JOIN participations p ON m.id = p.match_id
-                         JOIN gamemodes gm ON m.mode = gm.mode
+                         JOIN gamemodes gm ON m.mode_id = gm.mode
                 WHERE m.game_id = ?
-                  AND m.mode = ?
+                  AND m.mode_id = ?
                   AND m.match_state = ?
                 GROUP BY m.id
                 HAVING participants_count < gm.max_players
                 ORDER BY m.created_at DESC LIMIT 1
             `,
-            [gameId, mode, MatchState.OPEN]
+            [gameId, mode_id, MatchState.OPEN]
         );
 
         if (!row) return undefined;

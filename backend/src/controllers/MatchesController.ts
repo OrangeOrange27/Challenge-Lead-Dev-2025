@@ -50,9 +50,8 @@ router.post(
           data: {
             matchId: result.match.id,
             matchState: result.match.matchState,
-            maxPlayers: result.match.mode.maxPlayers,
             currentPlayers: result.participants,
-            entryFee: result.match.mode.entryFee,
+            mode: result.match.mode,
           }
         };
 
@@ -126,6 +125,7 @@ router.get(
             matchId: match.id,
             matchState: match.matchState,
             entries: leaderboard.entries,
+            playerEntry: leaderboard.entries.find(e => e.playerId === playerId),
           }
         };
 

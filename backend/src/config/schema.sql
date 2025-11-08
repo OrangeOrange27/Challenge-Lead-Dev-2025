@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS gamemodes (
     mode TEXT NOT NULL,
     max_players INTEGER NOT NULL,
     display_name TEXT NOT NULL,
-    entry_fee_json TEXT NOT NULL DEFAULT '{"CurrencyType":"Gems","Amount":0}',
+    entry_fee_json TEXT NOT NULL DEFAULT '{"CurrencyType":"SOFT","Amount":0}',
     prizes_json TEXT NOT NULL DEFAULT '[]'
 );
 
@@ -34,18 +34,18 @@ CREATE TABLE IF NOT EXISTS minigame_modes (
     FOREIGN KEY (gamemode_id) REFERENCES gamemodes(id) ON DELETE CASCADE
     );
 
--- Matches
 CREATE TABLE IF NOT EXISTS matches (
-  id TEXT PRIMARY KEY,
-  game_id TEXT NOT NULL,
-  mode TEXT NOT NULL CHECK(mode IN ('DEFAULT')),
-  match_state TEXT NOT NULL CHECK(match_state IN ('OPEN', 'RUNNING', 'COMPLETE')),
-  participants_count INTEGER NOT NULL DEFAULT 0,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  finalized_at TEXT,
-  FOREIGN KEY (game_id) REFERENCES minigames(id),
-  FOREIGN KEY (mode) REFERENCES gamemodes(mode)
-);
+    id TEXT PRIMARY KEY,
+    game_id TEXT NOT NULL,
+    mode_id TEXT NOT NULL,
+    match_state TEXT NOT NULL CHECK(match_state IN ('OPEN', 'RUNNING', 'COMPLETE')),
+    participants_count INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    finalized_at TEXT,
+    FOREIGN KEY (game_id) REFERENCES minigames(id),
+    FOREIGN KEY (mode_id) REFERENCES gamemodes(id)
+    );
+
 
 -- Participations
 CREATE TABLE IF NOT EXISTS participations (
@@ -94,8 +94,8 @@ VALUES
 -- Seed data: Game Modes
 INSERT OR IGNORE INTO gamemodes (id, mode, display_name, entry_fee_json, max_players, prizes_json)
 VALUES 
-  ('default', 'DEFAULT', 'DEFAULT', '{"CurrencyType":"Gems","Amount":10}', 5, 
-   '[{"CurrencyType":"Gems","Amount":100},{"CurrencyType":"Gems","Amount":50},{"CurrencyType":"Gems","Amount":20}]');
+  ('DEFAULT', 'DEFAULT', 'DEFAULT', '{"CurrencyType":"SOFT","Amount":10}', 5, 
+   '[{"CurrencyType":"HARD","Amount":10},{"CurrencyType":"SOFT","Amount":50},{"CurrencyType":"SOFT","Amount":20}]');
 
 -- Link minigame with its game mode
 INSERT OR IGNORE INTO minigame_modes (minigame_id, gamemode_id)

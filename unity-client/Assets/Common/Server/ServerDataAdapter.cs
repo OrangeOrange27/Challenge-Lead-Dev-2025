@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Common.Minigames;
 using Common.Minigames.Models;
+using Common.Models;
 using Common.Models.Economy;
 using Common.Server.DTOs;
 using ClientRewardModel = Common.Models.Economy.RewardModel;
@@ -143,6 +144,34 @@ namespace Common.Server
                 entryFee = ToServer(clientModel.EntryFee),
                 prizes = clientModel.Prizes?.Select(ToServer).ToList() ?? new List<ServerRewardModel>(),
                 maxPlayers = clientModel.ParticipantsCount
+            };
+        }
+
+        public static MinigameParticipantModel FromServer(LeaderboardEntry entry)
+        {
+            if (entry == null) return null;
+
+            return new MinigameParticipantModel
+            {
+                UserId = entry.playerId,
+                Name = entry.playerName,
+                AvatarId = null,
+                Result = new MinigameResult
+                {
+                    PointsForPrecision = entry.score,
+                }
+            };
+        }
+
+        public static LeaderboardEntry ToServer(MinigameParticipantModel participant)
+        {
+            if (participant == null) return null;
+
+            return new LeaderboardEntry
+            {
+                playerId = participant.UserId,
+                playerName = participant.Name,
+                score = participant.Result?.TotalPoints ?? 0
             };
         }
     }

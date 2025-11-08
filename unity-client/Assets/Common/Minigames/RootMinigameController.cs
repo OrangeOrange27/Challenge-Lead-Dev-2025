@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Common.Minigames.Models;
+using Common.Server;
+using Core;
 using Core.Hub.States;
 using Cysharp.Threading.Tasks;
 using Infra;
@@ -15,13 +17,16 @@ namespace Common.Minigames
     {
         private readonly IObjectResolver _resolver;
         private readonly Func<MinigameModel, IMinigameFlow> _flowFactory;
+        private readonly IPlayerDataService _playerDataService;
 
-        private MinigameBootstrapPayload _minigameModel;
+        private MinigameBootstrapPayload _payload;
+        private string _matchId;
 
-        public RootMinigameController(IObjectResolver resolver, Func<MinigameModel, IMinigameFlow> flowFactory)
+        public RootMinigameController(IObjectResolver resolver, Func<MinigameModel, IMinigameFlow> flowFactory, IPlayerDataService playerDataService)
         {
             _resolver = resolver;
             _flowFactory = flowFactory;
+            _playerDataService = playerDataService;
         }
 
         public UniTask OnInitialize(IControllerResources resources, CancellationToken token)
@@ -29,25 +34,28 @@ namespace Common.Minigames
             return UniTask.CompletedTask;
         }
 
-        public UniTask OnStart(MinigameBootstrapPayload payload, IControllerResources resources,
+        public async UniTask OnStart(MinigameBootstrapPayload payload, IControllerResources resources,
             IControllerChildren controllerChildren,
             CancellationToken token)
         {
-            _minigameModel = payload;
-
-            return UniTask.CompletedTask;
+            _payload = payload;
+            
+            await JoinMatchAsync();
         }
 
         public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources,
             IControllerChildren controllerChildren, CancellationToken token)
         {
             var result = await controllerChildren.Create<MinigameModel, MinigameResult>(ConvertFactory(_flowFactory))
-                .RunToDispose(_minigameModel.MinigameModel, token);
+                .RunToDispose(_payload.MinigameModel, token);
+            
+            SubmitScoreAsync(result.TotalPoints).Forget();
 
             var minigameCompletionPayload = new MinigameCompletionPayload()
             {
-                MinigameIcon = _minigameModel.MinigameIcon,
-                Result = result
+                MinigameIcon = _payload.MinigameIcon,
+                Result = result,
+                MatchId = _matchId
             };
 
             return StateMachineInstructionSugar.GoTo<MinigameCompletionState, MinigameCompletionPayload>(_resolver,
@@ -66,8 +74,24 @@ namespace Common.Minigames
 
         private Func<IMinigameFlow> ConvertFactory(Func<MinigameModel, IMinigameFlow> flowFactory)
         {
-            var model = _minigameModel;
+            var model = _payload;
             return () => flowFactory(model.MinigameModel);
+        }
+
+        private async UniTask JoinMatchAsync()
+        {
+            var response = await ServerAPI.Matches.EnterMatchAsync(_payload.MinigameModel.Id, _payload.GameMode.Id, _playerDataService.PlayerData.AuthToken);
+
+            _matchId = response.matchId;
+            
+            _playerDataService.SpendBalance(ServerDataAdapter.FromServer(response.mode.entryFee.currencyType),
+                response.mode.entryFee.amount);
+        }
+
+        private async UniTask SubmitScoreAsync(int score)
+        {
+            var response =
+                await ServerAPI.Matches.SubmitScoreAsync(_matchId, score, _playerDataService.PlayerData.AuthToken);
         }
     }
 }

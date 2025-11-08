@@ -7,5 +7,7 @@ namespace Core.Hub.Views.Minigame.MinigameCompletion
     {
         event Action OnContinueButtonPressed;
         void SetData(MinigameCompletionPayload payload);
+        
+        void SetButtonActive(bool isActive);
     }
 }

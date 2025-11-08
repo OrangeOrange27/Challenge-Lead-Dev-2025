@@ -1,5 +1,6 @@
 import { MatchState, GameModeType } from "../enums";
 import {RewardModel} from "./playerBalance";
+import {GameMode} from "../entities";
 
 export interface EnterMatchRequest {
   gameId: string;
@@ -9,11 +10,9 @@ export interface EnterMatchRequest {
 
 export interface EnterMatchResponse {
   matchId?: string;
-  mode?: GameModeType;
+  mode?: GameMode;
   matchState?: MatchState;
-  maxPlayers?: number;
   currentPlayers?: number;
-  entryFee?: RewardModel;
 }
 
 export interface SubmitScoreRequest {
