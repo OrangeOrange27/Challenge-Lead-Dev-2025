@@ -7,7 +7,7 @@ import playerController from "../controllers/PlayerController";
 const router = Router();
 
 router.use("/auth", authController);
-router.use("/games", minigamesController);
+router.use("/minigames", minigamesController);
 router.use("/matches", matchesController);
 router.use("/player", playerController);
 

@@ -7,6 +7,7 @@ using Common.ConfigSystem;
 using Common.Minigames;
 using Common.Minigames.Models;
 using Common.Models.Economy;
+using Common.Server;
 using Core.Hub.States;
 using Core.Hub.UI;
 using Cysharp.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace Core.Hub
         private readonly List<IMinigameItemView> _minigameViews = new();
 
         private IHubView _hubView;
+        private List<MinigameModel> _minigames;
 
         private IControllerResources _resources;
         private IControllerChildren _controllerChildren;
@@ -68,7 +70,7 @@ namespace Core.Hub
             IControllerChildren controllerChildren,
             CancellationToken token)
         {
-            var minigamesConfig = _minigamesConfigProvider.Get();
+            _minigames = await GetMinigames();
 
             _hubView = await _hubViewLoader.Load(resources, token, null);
 
@@ -78,7 +80,7 @@ namespace Core.Hub
             OnBalanceChanged(CurrencyType.Cash, _playerDataService.PlayerData.Cash);
             _playerDataService.OnBalanceChanged += OnBalanceChanged;
 
-            await SpawnMinigameViews(minigamesConfig.Minigames, resources, token);
+            await SpawnMinigameViews(_minigames, resources, token);
         }
 
         public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources,
@@ -152,7 +154,7 @@ namespace Core.Hub
 
         private async UniTask OnMinigameClick(string id, Sprite icon, CancellationToken token)
         {
-            var minigameModel = _minigamesConfigProvider.Get().Minigames.FirstOrDefault(m => m.Id == id);
+            var minigameModel = _minigames.FirstOrDefault(m => m.Id == id);
             var payload = new SelectModeStatePayload
             {
                 MinigameModel = minigameModel,
@@ -187,6 +189,34 @@ namespace Core.Hub
 
             _machineInstructionCompletionSource.TrySetResult(
                 StateMachineInstructionSugar.GoTo<MinigameLoadingState, MinigameBootstrapPayload>(_resolver, payload));
+        }
+
+        private async UniTask<List<MinigameModel>> GetMinigames()
+        {
+            var minigames = await FetchMinigamesFromServer();
+            if(minigames == null || minigames.Count == 0)
+            {
+                Debug.LogError("Failed to fetch minigames from server or no minigames available.");
+                
+                var minigamesConfig = _minigamesConfigProvider.Get();
+                minigames = minigamesConfig.Minigames;
+            }
+
+            return minigames;
+        }
+
+        private async UniTask<List<MinigameModel>> FetchMinigamesFromServer()
+        {
+            var response = await ServerAPI.Minigames.GetGamesAsync(_playerDataService.PlayerData.AuthToken);
+            
+            var minigames = response.games?.Select(g => new MinigameModel
+            {
+                Id = g.id,
+                IconId = g.iconId,
+                Modes = g.modes.Select(ServerDataAdapter.FromServer).ToList()
+            });
+            
+            return minigames?.ToList();
         }
 
         private void OnBalanceChanged(CurrencyType assetType, int amount)

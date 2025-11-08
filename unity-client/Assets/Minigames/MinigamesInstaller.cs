@@ -20,7 +20,7 @@ namespace Minigames
             {
                 return model.Id switch
                 {
-                    "match_minigame" => c.Resolve<MatchMinigameFlow>(),
+                    "match" => c.Resolve<MatchMinigameFlow>(),
                     _ => throw new ArgumentException($"Unknown minigame {model.Id}")
                 };
             }, Lifetime.Transient);

@@ -17,11 +17,11 @@ namespace Common.ConfigSystem
     public class RemoteConfigProvider<T> : IConfigProvider<T>, IBeforeAuthInitialize where T : BaseConfig
     {
         private readonly IAssetProvider _assetProvider;
+        private readonly ISerializer _serializer;
+        private readonly IDataProvider _dataProvider;
 
         private readonly string _builtInKey;
-        private readonly IDataProvider _dataProvider;
         private readonly Uri _remoteUrl;
-        private readonly ISerializer _serializer;
         private T _cachedData;
 
         public RemoteConfigProvider(string builtInKey, Uri remoteUrl, IDataProvider dataProvider,

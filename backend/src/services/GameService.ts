@@ -30,6 +30,7 @@ export class GameService {
       id: game.id,
       name: game.name,
       iconId: game.iconId,
+      modes: game.modes,
     };
   }
 }

@@ -20,11 +20,9 @@ namespace Common.Server.DTOs
     [Serializable]
     public class GetLeaderboardResponse
     {
-        public bool success;
         public string matchId;
         public string matchState;
         public List<LeaderboardEntry> entries;
         public LeaderboardEntry playerEntry;
-        public string error;
     }
 }

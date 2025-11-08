@@ -8,21 +8,31 @@ CREATE TABLE IF NOT EXISTS players (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Game Modes
-CREATE TABLE IF NOT EXISTS gamemodes (
-  mode TEXT PRIMARY KEY CHECK(mode IN ('DEFAULT')),
-  max_players INTEGER NOT NULL,
-  display_name TEXT NOT NULL,
-  entry_fee_json TEXT NOT NULL DEFAULT '{"CurrencyType":"Gems","Amount":0}',
-  prizes_json TEXT NOT NULL DEFAULT '[]'
-);
-
 -- Minigames
 CREATE TABLE IF NOT EXISTS minigames (
-  id TEXT PRIMARY KEY,
-  game_name TEXT NOT NULL,
-  icon_id TEXT NOT NULL
+    id TEXT PRIMARY KEY,
+    game_name TEXT NOT NULL,
+    icon_id TEXT NOT NULL
 );
+
+-- Game Modes
+CREATE TABLE IF NOT EXISTS gamemodes (
+    id TEXT PRIMARY KEY,
+    mode TEXT NOT NULL,
+    max_players INTEGER NOT NULL,
+    display_name TEXT NOT NULL,
+    entry_fee_json TEXT NOT NULL DEFAULT '{"CurrencyType":"Gems","Amount":0}',
+    prizes_json TEXT NOT NULL DEFAULT '[]'
+);
+
+-- Junction table: many-to-many relation between minigames and gamemodes
+CREATE TABLE IF NOT EXISTS minigame_modes (
+    minigame_id TEXT NOT NULL,
+    gamemode_id TEXT NOT NULL,
+    PRIMARY KEY (minigame_id, gamemode_id),
+    FOREIGN KEY (minigame_id) REFERENCES minigames(id) ON DELETE CASCADE,
+    FOREIGN KEY (gamemode_id) REFERENCES gamemodes(id) ON DELETE CASCADE
+    );
 
 -- Matches
 CREATE TABLE IF NOT EXISTS matches (
@@ -76,12 +86,18 @@ CREATE TABLE IF NOT EXISTS transactions (
   FOREIGN KEY (match_id) REFERENCES matches(id)
 );
 
--- Seed data: Game Modes
-INSERT OR IGNORE INTO gamemodes (mode, display_name, entry_fee_json, max_players, prizes_json)
-VALUES 
-  ('DEFAULT', 'DEFAULT', '{"CurrencyType":"Gems","Amount":10}', 5, '[{"CurrencyType":"Gems","Amount":100},{"CurrencyType":"Gems","Amount":50},{"CurrencyType":"Gems","Amount":20}]');
-
 -- Seed data: Minigames
 INSERT OR IGNORE INTO minigames (id, game_name, icon_id)
 VALUES 
   ('match', 'Match', 'minigame_match_icon');
+
+-- Seed data: Game Modes
+INSERT OR IGNORE INTO gamemodes (id, mode, display_name, entry_fee_json, max_players, prizes_json)
+VALUES 
+  ('default', 'DEFAULT', 'DEFAULT', '{"CurrencyType":"Gems","Amount":10}', 5, 
+   '[{"CurrencyType":"Gems","Amount":100},{"CurrencyType":"Gems","Amount":50},{"CurrencyType":"Gems","Amount":20}]');
+
+-- Link minigame with its game mode
+INSERT OR IGNORE INTO minigame_modes (minigame_id, gamemode_id)
+VALUES 
+  ('match', 'default');

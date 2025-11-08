@@ -14,6 +14,7 @@ export interface Game {
   id: string;
   name: string;
   iconId?: string;
+  modes: GameMode[];
 }
 
 export interface GameMode {

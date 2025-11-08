@@ -17,10 +17,8 @@ namespace Common.Server.DTOs
     [Serializable]
     public class ClaimRewardResponse
     {
-        public bool success;
         public RewardModel reward;
         public PlayerBalance newBalance;
-        public string error;
     }
 
     /// <summary>

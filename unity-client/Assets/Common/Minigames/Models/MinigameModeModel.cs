@@ -5,6 +5,7 @@ namespace Common.Minigames.Models
 {
     public class MinigameModeModel
     {
+        public string Id { get; set; }
         public RewardModel[] Prizes { get; set; }
         public RewardModel EntryFee { get; set; }
         public int ParticipantsCount { get; set; }

@@ -8,7 +8,7 @@ namespace Common.Server
 {
     public static partial class ServerAPI
     {
-        private const string BaseUrl = "http://localhost:8080/api";
+        public const string BaseUrl = "http://localhost:8080/api";
 
         public class Player
         {

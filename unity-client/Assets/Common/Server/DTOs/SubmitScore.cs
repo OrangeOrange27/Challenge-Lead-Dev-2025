@@ -18,8 +18,6 @@ namespace Common.Server.DTOs
     [Serializable]
     public class SubmitScoreResponse
     {
-        public bool success;
         public int? rank;
-        public string error;
     }
 }

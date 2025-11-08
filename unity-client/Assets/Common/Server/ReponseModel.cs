@@ -44,6 +44,8 @@ namespace Common.Server
         /// <returns>A ResponseModel with IsSuccess set to false and the provided error message.</returns>
         public static ResponseModel<T> Error(string errorMessage)
         {
+            Debug.LogErrorFormat("ResponseModel Error: {0}", errorMessage);
+            
             return new ResponseModel<T>
             {
                 IsSuccess = false,
