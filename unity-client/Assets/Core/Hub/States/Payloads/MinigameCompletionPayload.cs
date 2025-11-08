@@ -8,5 +8,6 @@ namespace Core.Hub.States
         public string MatchId { get; set; }
         public Sprite MinigameIcon { get; set; }
         public MinigameResult Result { get; set; }
+        public MinigameModeModel GameMode { get; set; }
     }
 }

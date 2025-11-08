@@ -100,4 +100,4 @@ VALUES
 -- Link minigame with its game mode
 INSERT OR IGNORE INTO minigame_modes (minigame_id, gamemode_id)
 VALUES 
-  ('match', 'default');
+  ('match', 'DEFAULT');

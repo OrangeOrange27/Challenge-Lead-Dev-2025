@@ -92,7 +92,8 @@ namespace Core.Hub.States
                     AvatarId = playerEntry.playerId,
                     Result = _playerResult
                 },
-                MinigameIcon = _payload.MinigameIcon
+                MinigameIcon = _payload.MinigameIcon,
+                GameMode = _payload.GameMode
             };
         }
 

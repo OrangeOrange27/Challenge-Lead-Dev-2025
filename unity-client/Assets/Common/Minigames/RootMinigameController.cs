@@ -55,7 +55,8 @@ namespace Common.Minigames
             {
                 MinigameIcon = _payload.MinigameIcon,
                 Result = result,
-                MatchId = _matchId
+                MatchId = _matchId,
+                GameMode = _payload.GameMode
             };
 
             return StateMachineInstructionSugar.GoTo<MinigameCompletionState, MinigameCompletionPayload>(_resolver,

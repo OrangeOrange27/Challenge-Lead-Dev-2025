@@ -24,7 +24,7 @@ namespace Core.Hub.States
         private IMinigameResultsView _view;
         private MinigameResultsPayload _payload;
         private IControllerResources _resources;
-        
+
         public MinigameResultsState(
             IViewLoader<IMinigameResultsView> viewLoader,
             IViewLoader<IScoreItemView> scoreItemViewLoader,
@@ -46,7 +46,7 @@ namespace Core.Hub.States
         {
             _payload = payload;
             _resources = resources;
-            
+
             _view = await _viewLoader.Load(resources, token, null);
             _view.OnCloseButtonClicked += OnCloseClicked;
             _view.SetIcon(_payload.MinigameIcon);
@@ -81,27 +81,26 @@ namespace Core.Hub.States
         private async UniTask SpawnParticipantsScoreItemViews(CancellationToken token)
         {
             var participants = new List<MinigameParticipantModel>(_payload.Participants) { _payload.LocalPlayer };
+
             var sortedParticipants = participants
-                .OrderByDescending(participant => participant.Result.TotalPoints);
-            
+                .GroupBy(p => p.UserId)
+                .Select(g => g.First())
+                .OrderByDescending(p => p.Result.TotalPoints);
+
             await UniTask.WhenAll(Enumerable.Select(sortedParticipants,
-                model => CreateParticipantItemView(model, token)));
+                (m, i) => CreateParticipantItemView(m, i, token)));
         }
 
-        private async UniTask CreateParticipantItemView(MinigameParticipantModel model, CancellationToken token)
+        private async UniTask CreateParticipantItemView(MinigameParticipantModel model, int rank,
+            CancellationToken token)
         {
             var itemView = await _scoreItemViewLoader.Load(_resources, token, _view.LeaderboardContent);
-            itemView.SetData(model, GetRewardForParticipant(model), model.UserId == _payload.LocalPlayer.UserId);
+            itemView.SetData(model, GetRewardForRank(rank), model.UserId == _payload.LocalPlayer.UserId);
         }
 
-        private RewardModel GetRewardForParticipant(MinigameParticipantModel participant)
+        private RewardModel GetRewardForRank(int rank)
         {
-            // For demo purposes, everyone gets the same reward
-            return new RewardModel
-            {
-                CurrencyType = CurrencyType.Gems,
-                Amount = 100
-            };
+            return _payload.GameMode.Prizes[rank];
         }
     }
 }

@@ -82,7 +82,7 @@ export class PlayersStorage {
         );
         if (!row) throw new Error("Player not found");
 
-        const newBalance = Math.max(0, (row[column] ?? 0) + amount);
+        const newBalance = Math.max(0, amount);
 
         await runQuery(
             `UPDATE players
