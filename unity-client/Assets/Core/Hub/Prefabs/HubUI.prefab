@@ -971,6 +971,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4944207543679209442, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5616978462143560926, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -983,13 +987,61 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9142074882532329745, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7476852780379013492, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2122924100547254067}
   m_SourcePrefab: {fileID: 100100000, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+--- !u!114 &393749385303285107 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6730007345126536136, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+  m_PrefabInstance: {fileID: 6346463575263850171}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2bb9c431b154bdeb0eadad668525a1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.UI.HubBottomPanelTabView
+--- !u!1 &4598235703353847759 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7476852780379013492, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+  m_PrefabInstance: {fileID: 6346463575263850171}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2122924100547254067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4598235703353847759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 422408bf4adf4d2da0e38e41eec6f2cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.UI.HubBottomPanel
+  _homeButton: {fileID: 6838018639845338124}
+  _resultsButton: {fileID: 393749385303285107}
 --- !u!224 &5099604279662351504 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2222040354521659947, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
   m_PrefabInstance: {fileID: 6346463575263850171}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6838018639845338124 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 501781124166812343, guid: d95d365eed2b6ab4e81f0de347f413f2, type: 3}
+  m_PrefabInstance: {fileID: 6346463575263850171}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2bb9c431b154bdeb0eadad668525a1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.UI.HubBottomPanelTabView
