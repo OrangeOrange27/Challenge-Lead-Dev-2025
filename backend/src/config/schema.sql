@@ -101,3 +101,17 @@ VALUES
 INSERT OR IGNORE INTO minigame_modes (minigame_id, gamemode_id)
 VALUES 
   ('match', 'DEFAULT');
+       
+-- Seed 10 bot players
+INSERT OR IGNORE INTO players (id, device_id, player_name, soft_currency, hard_currency)
+VALUES
+  ('bot_1', 'bot_1_device', 'Bot 1', 1000, 0),
+  ('bot_2', 'bot_2_device', 'Bot 2', 1000, 0),
+  ('bot_3', 'bot_3_device', 'Bot 3', 1000, 0),
+  ('bot_4', 'bot_4_device', 'Bot 4', 1000, 0),
+  ('bot_5', 'bot_5_device', 'Bot 5', 1000, 0),
+  ('bot_6', 'bot_6_device', 'Bot 6', 1000, 0),
+  ('bot_7', 'bot_7_device', 'Bot 7', 1000, 0),
+  ('bot_8', 'bot_8_device', 'Bot 8', 1000, 0),
+  ('bot_9', 'bot_9_device', 'Bot 9', 1000, 0),
+  ('bot_10', 'bot_10_device', 'Bot 10', 1000, 0);

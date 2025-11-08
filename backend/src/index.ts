@@ -4,10 +4,8 @@ import { CONFIG } from "./config/constants";
 import { initializeDatabase } from "./scripts/initDatabase";
 import { errorHandler } from "./middleware/errorHandler";
 import routes from "./routes";
-import { MatchFinalizerJob } from "./jobs/MatchFinalizerJob";
 
 const app: Application = express();
-let finalizerJob: MatchFinalizerJob | null = null;
 
 app.use(cors());
 app.use(express.json());
@@ -27,8 +25,6 @@ async function startServer(): Promise<void> {
     await initializeDatabase();
 
     console.log("[Server] Starting Match Finalizer Job...");
-    finalizerJob = new MatchFinalizerJob();
-    finalizerJob.start();
 
     app.listen(CONFIG.PORT, () => {
       console.log("=".repeat(10));
@@ -54,21 +50,5 @@ async function startServer(): Promise<void> {
     process.exit(1);
   }
 }
-
-process.on("SIGINT", () => {
-  console.log("\n[Server] Shutting down...");
-  if (finalizerJob) {
-    finalizerJob.stop();
-  }
-  process.exit(0);
-});
-
-process.on("SIGTERM", () => {
-  console.log("\n[Server] Shutting down...");
-  if (finalizerJob) {
-    finalizerJob.stop();
-  }
-  process.exit(0);
-});
 
 startServer();

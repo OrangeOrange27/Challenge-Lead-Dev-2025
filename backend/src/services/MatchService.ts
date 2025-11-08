@@ -33,8 +33,19 @@ export class MatchService {
     
     await this.participations.create(match.id, playerId);
     console.log(`[MatchManager] Player ${playerId} joined match ${match.id}`);
-    
-    //todo: create mock players
+
+    // ---- Mock participations ----
+    const currentCount = await this.matches.getParticipantCount(match.id);
+    const maxParticipants = modeConfig.maxPlayers;
+
+    for (let i = currentCount; i < maxParticipants; i++) {
+      const mockPlayerId = `bot_${i + 1}`;
+      const rndScore = Math.floor(Math.random() * 20000);
+      await this.participations.create(match.id, mockPlayerId);
+      await this.submitMatchScore(match.id, mockPlayerId, rndScore);
+      console.log(`[MatchManager] Mock player ${mockPlayerId} added to match ${match.id} with score: ${rndScore}`);
+    }
+    // --------------------------------
 
     if (match.matchState === MatchState.OPEN) {
       await this.matches.updateState(match.id, MatchState.RUNNING);

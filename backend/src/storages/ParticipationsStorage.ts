@@ -3,7 +3,7 @@ import { getOne, runQuery, getAll } from "../config/database";
 import { Participation } from "../models/entities";
 
 export class ParticipationsStorage {
-  async create(matchId: string, playerId: string): Promise<Participation> {
+  async create(matchId: string, playerId: string, score: number | null = null): Promise<Participation> {
     const id = uuidv4();
     const createdAt = new Date().toISOString();
 
@@ -16,7 +16,7 @@ export class ParticipationsStorage {
       id,
       matchId,
       playerId,
-      score: null,
+      score,
       submittedAt: null,
       createdAt,
     };

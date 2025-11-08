@@ -24,18 +24,27 @@ namespace Core.Hub.UI.Components
         [SerializeField] private TMP_Text _playerScore;
         [SerializeField] private RewardItemView _rewardItemView;
 
-        public void SetData(MinigameParticipantModel participantModel, RewardModel rewardModel, bool isHighlighted)
+        public void SetData(MinigameParticipantModel participantModel, RewardModel? rewardModel, bool isHighlighted)
         {
+            gameObject.SetActive(false);
+
             _highlightBG.gameObject.SetActive(isHighlighted);
             SetIcon(isHighlighted);
 
             _playerName.text = participantModel.Name;
             _playerScore.text = participantModel.Result.TotalPoints.ToString();
 
-            _rewardItemView.Set(rewardModel);
+            if (rewardModel != null)
+            {
+                _rewardItemView.Set(rewardModel.Value);
+                _rewardItemView.gameObject.SetActive(true);
+            }
+            else
+            {
+                _rewardItemView.gameObject.SetActive(false);
+            }
 
             _playerPanel.gameObject.SetActive(true);
-            _rewardItemView.gameObject.SetActive(true);
 
             _mainText.gameObject.SetActive(false);
             _scoreText.gameObject.SetActive(false);

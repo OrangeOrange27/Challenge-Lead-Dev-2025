@@ -112,8 +112,11 @@ namespace Core.Hub.States
             _spawnedScoreItemViews.Add(itemView);
         }
 
-        private RewardModel GetRewardForRank(int rank)
+        private RewardModel? GetRewardForRank(int rank)
         {
+            if(rank >= _payload.GameMode.Prizes.Length)
+                return null;
+            
             return _payload.GameMode.Prizes[rank];
         }
     }
