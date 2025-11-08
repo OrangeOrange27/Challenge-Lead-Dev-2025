@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Threading;
 using Core.Hub.States;
+using Core.Hub.UI.Components;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +20,11 @@ namespace Core.Hub.Views.Minigame.MinigameCompletion
 
         [SerializeField] private Button _continueButton;
         
+        [Header("Animation targets")]
+        [SerializeField] private TMP_Text _titleText;
+        [SerializeField] private TMP_Text _subTitleText;
+        [SerializeField] private ScoreItemView[] _scoreItems;
+        
         public event Action OnContinueButtonPressed;
 
         private void Awake()
@@ -31,9 +40,32 @@ namespace Core.Hub.Views.Minigame.MinigameCompletion
             _timeBonus.text = payload.Result.PointsForReaction.ToString();
         }
 
-        public void SetButtonActive(bool isActive)
+        public async UniTask PlayAnimation(CancellationToken token)
         {
-            _continueButton.interactable = isActive;
+            // Ensure DOTween sequences are cleared
+            DOTween.Kill(this);
+
+            _continueButton.interactable = false;
+            
+            _titleText.transform.localScale = Vector3.zero;
+            _subTitleText.transform.localScale = Vector3.zero;
+
+            await _titleText.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack).AsyncWaitForCompletion();
+            await _subTitleText.transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack).AsyncWaitForCompletion();
+
+            // Sequentially animate score items
+            foreach (var item in _scoreItems)
+            {
+                token.ThrowIfCancellationRequested();
+
+                // Await the UniTask animation
+                await item.PlayAppearAnimation(token);
+
+                // Small delay between items
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: token);
+            }
+            
+            _continueButton.interactable = true;
         }
 
         private void OnDestroy()

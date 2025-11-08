@@ -16,8 +16,6 @@ namespace Core.Hub.States
 {
     public class MinigameCompletionState : IStateController<MinigameCompletionPayload>
     {
-        private const float WaitingTimeSeconds = 3f;
-
         private readonly UniTaskCompletionSource<IStateMachineInstruction> _machineInstructionCompletionSource = new();
 
         private readonly IViewLoader<IMinigameCompletionView> _viewLoader;
@@ -53,7 +51,6 @@ namespace Core.Hub.States
             _view = await _viewLoader.Load(resources, token, null);
 
             _view.SetData(payload);
-            _view.SetButtonActive(false);
 
             _view.OnContinueButtonPressed += OnContinueClicked;
         }
@@ -61,8 +58,7 @@ namespace Core.Hub.States
         public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources,
             IControllerChildren controllerChildren, CancellationToken token)
         {
-            await UniTask.WaitForSeconds(WaitingTimeSeconds, cancellationToken: token);
-            _view.SetButtonActive(true);
+            await _view.PlayAnimation(token);
 
             return await _machineInstructionCompletionSource.Task.AttachExternalCancellation(token);
         }
@@ -84,7 +80,7 @@ namespace Core.Hub.States
 
             return new MinigameResultsPayload()
             {
-                Participants = response.entries?.Select(ServerDataAdapter.FromServer).ToList(), //MockParticipants(),
+                Participants = response.entries?.Select(ServerDataAdapter.FromServer).ToList(),
                 LocalPlayer = new MinigameParticipantModel
                 {
                     UserId = playerEntry.playerId,

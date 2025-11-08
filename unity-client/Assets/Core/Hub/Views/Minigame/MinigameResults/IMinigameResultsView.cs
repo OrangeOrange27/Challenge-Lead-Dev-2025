@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Core.Hub.Views.Minigame.MinigameResults
@@ -9,5 +11,7 @@ namespace Core.Hub.Views.Minigame.MinigameResults
         Transform LeaderboardContent { get; }
         
         void SetIcon(Sprite icon);
+        
+        UniTask PlayShowAnimation(CancellationToken token);
     }
 }

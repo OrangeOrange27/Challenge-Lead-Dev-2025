@@ -1,5 +1,8 @@
-﻿using Common.Models;
+﻿using System.Threading;
+using Common.Models;
 using Common.Models.Economy;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,6 +50,14 @@ namespace Core.Hub.UI.Components
             _scoreText.gameObject.SetActive(true);
 
             _scoreText.text = score.ToString();
+        }
+
+        public async UniTask PlayAppearAnimation(CancellationToken token)
+        {
+            transform.localScale = Vector3.zero;
+            gameObject.SetActive(true);
+
+            transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack);
         }
 
         private void SetIcon(bool isHighlighted)

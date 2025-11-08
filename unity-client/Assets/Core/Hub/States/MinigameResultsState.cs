@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Common.Models;
@@ -20,6 +21,7 @@ namespace Core.Hub.States
         private readonly IViewLoader<IMinigameResultsView> _viewLoader;
         private readonly IViewLoader<IScoreItemView> _scoreItemViewLoader;
         private readonly IObjectResolver _resolver;
+        private readonly List<IScoreItemView> _spawnedScoreItemViews = new();
 
         private IMinigameResultsView _view;
         private MinigameResultsPayload _payload;
@@ -50,8 +52,10 @@ namespace Core.Hub.States
             _view = await _viewLoader.Load(resources, token, null);
             _view.OnCloseButtonClicked += OnCloseClicked;
             _view.SetIcon(_payload.MinigameIcon);
-
+            
+            await _view.PlayShowAnimation(token);
             await SpawnParticipantsScoreItemViews(token);
+            await PlayScoreItemsAnimation(token);
         }
 
         private void OnCloseClicked()
@@ -90,12 +94,22 @@ namespace Core.Hub.States
             await UniTask.WhenAll(Enumerable.Select(sortedParticipants,
                 (m, i) => CreateParticipantItemView(m, i, token)));
         }
+        
+        private async UniTask PlayScoreItemsAnimation(CancellationToken token)
+        {
+            foreach (var itemView in _spawnedScoreItemViews)
+            {
+                await itemView.PlayAppearAnimation(token);
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f), cancellationToken: token);
+            }
+        }
 
         private async UniTask CreateParticipantItemView(MinigameParticipantModel model, int rank,
             CancellationToken token)
         {
             var itemView = await _scoreItemViewLoader.Load(_resources, token, _view.LeaderboardContent);
             itemView.SetData(model, GetRewardForRank(rank), model.UserId == _payload.LocalPlayer.UserId);
+            _spawnedScoreItemViews.Add(itemView);
         }
 
         private RewardModel GetRewardForRank(int rank)

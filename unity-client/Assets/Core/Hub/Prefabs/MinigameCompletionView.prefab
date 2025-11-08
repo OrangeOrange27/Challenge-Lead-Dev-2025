@@ -125,6 +125,12 @@ MonoBehaviour:
   _baseScore: {fileID: 4718483873472293270}
   _timeBonus: {fileID: 3912590286807453150}
   _continueButton: {fileID: 2529756181133748675}
+  _titleText: {fileID: 3267318642565108649}
+  _subTitleText: {fileID: 7391769478436786064}
+  _scoreItems:
+  - {fileID: 3542220555232145134}
+  - {fileID: 6254510719593635589}
+  - {fileID: 2448621651067452237}
 --- !u!1 &2957188327841905654
 GameObject:
   m_ObjectHideFlags: 0
@@ -620,7 +626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMin.x
@@ -628,7 +634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_SizeDelta.x
@@ -668,11 +674,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 885
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -300
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -694,7 +700,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902007088202081671, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 123.668304
       objectReference: {fileID: 0}
     - target: {fileID: 5074077113671274382, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_IsActive
@@ -703,6 +709,10 @@ PrefabInstance:
     - target: {fileID: 5995898232940692177, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_Name
       value: ScoreItemView
+      objectReference: {fileID: 0}
+    - target: {fileID: 5995898232940692177, guid: 37b3aac77837a31478264c079378a696, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6137841620926762274, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_IsActive
@@ -777,6 +787,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &3542220555232145134 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3724288734636065728, guid: 37b3aac77837a31478264c079378a696, type: 3}
+  m_PrefabInstance: {fileID: 182160544890498350}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8be429e2035e498f9d68f56dfaf89ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.UI.Components.ScoreItemView
 --- !u!1001 &785817458910282001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -960,7 +981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMin.x
@@ -968,7 +989,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1008,11 +1029,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 885
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1041,6 +1062,10 @@ PrefabInstance:
     - target: {fileID: 5995898232940692177, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_Name
       value: ScoreItemView (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5995898232940692177, guid: 37b3aac77837a31478264c079378a696, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6137841620926762274, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_IsActive
@@ -1095,6 +1120,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 37b3aac77837a31478264c079378a696, type: 3}
+--- !u!114 &2448621651067452237 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3724288734636065728, guid: 37b3aac77837a31478264c079378a696, type: 3}
+  m_PrefabInstance: {fileID: 1320703354754332813}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8be429e2035e498f9d68f56dfaf89ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.UI.Components.ScoreItemView
 --- !u!224 &3676700707592919750 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
@@ -1348,7 +1384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMin.x
@@ -1356,7 +1392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1396,11 +1432,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 885
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -650
       objectReference: {fileID: 0}
     - target: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1421,6 +1457,10 @@ PrefabInstance:
     - target: {fileID: 5995898232940692177, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_Name
       value: ScoreItemView (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5995898232940692177, guid: 37b3aac77837a31478264c079378a696, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6297961293795714510, guid: 37b3aac77837a31478264c079378a696, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1487,3 +1527,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2401077640167203403, guid: 37b3aac77837a31478264c079378a696, type: 3}
   m_PrefabInstance: {fileID: 7305727566478351557}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6254510719593635589 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3724288734636065728, guid: 37b3aac77837a31478264c079378a696, type: 3}
+  m_PrefabInstance: {fileID: 7305727566478351557}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8be429e2035e498f9d68f56dfaf89ccb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Hub.UI.Components.ScoreItemView
