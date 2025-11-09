@@ -24,7 +24,7 @@ Flow is fully async and state-driven. Views load via Addressables, data syncs th
 
 ### Getting Started
 1. Clone the repository.
-2. Open the project in **Unity 2022.3 LTS**.
+2. Open the project in **Unity 6000**.
 3. Setup server. (Check backend README for instructions.)
 4. Run **`Assets/Scenes/MainScene.unity`** to start the client.
 5. Press **Play** — the app will initialize authentication, load configs, and open the Hub.
