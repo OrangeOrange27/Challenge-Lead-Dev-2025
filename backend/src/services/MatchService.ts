@@ -4,12 +4,14 @@ import { MinigamesStorage } from "../storages/MinigamesStorage";
 import { GameModesStorage } from "../storages/GameModesStorage";
 import { MatchStorage } from "../storages/MatchStorage";
 import {GameModeType, MatchState} from "../models/enums";
+import {RewardService} from "./RewardService";
 
 export class MatchService {
   private matches = new MatchStorage();
   private participations = new ParticipationsStorage();
   private games = new MinigamesStorage();
   private modes = new GameModesStorage();
+  private rewardService = new RewardService();
   
   async joinMatch(
       gameId: string,
@@ -42,7 +44,7 @@ export class MatchService {
       const mockPlayerId = `bot_${i + 1}`;
       const rndScore = Math.floor(Math.random() * 20000);
       await this.participations.create(match.id, mockPlayerId);
-      await this.submitMatchScore(match.id, mockPlayerId, rndScore);
+      await this.submitMatchScore(match.id, mockPlayerId, rndScore, true);
       console.log(`[MatchManager] Mock player ${mockPlayerId} added to match ${match.id} with score: ${rndScore}`);
     }
     // --------------------------------
@@ -57,7 +59,7 @@ export class MatchService {
     return {match, participants};
   }
 
-  async submitMatchScore(matchId: string, playerId: string, score: number): Promise<void> {
+  async submitMatchScore(matchId: string, playerId: string, score: number, isBot: boolean = false): Promise<void> {
     const match = await this.requireMatch(matchId);
     this.ensureMatchOngoing(match);
 
@@ -68,6 +70,12 @@ export class MatchService {
 
     await this.participations.updateScore(entry.id, score);
     console.log(`[MatchManager] Player ${playerId} submitted score ${score} for match ${matchId}`);
+    
+    // Instaantly finalize the match because we don't have real players yet
+    if(!isBot) {
+      await this.matches.updateState(matchId, MatchState.COMPLETE);
+      await this.rewardService.assignRewards(matchId);
+    }
   }
 
   async fetchMatch(matchId: string): Promise<{ match: Match; participants: number }> {

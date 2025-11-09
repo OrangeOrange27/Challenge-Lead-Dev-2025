@@ -8,8 +8,10 @@ using Common.Minigames;
 using Common.Minigames.Models;
 using Common.Models.Economy;
 using Common.Server;
+using Common.Server.DTOs;
 using Core.Hub.States;
 using Core.Hub.UI;
+using Core.Hub.UI.Components;
 using Cysharp.Threading.Tasks;
 using Infra;
 using Infra.AssetManagement.AssetProvider;
@@ -22,6 +24,8 @@ using VContainer;
 
 namespace Core.Hub
 {
+    // Ideally, this state would be split into smaller states for better maintainability. (HubResultsState and HubMinigamesState)
+    // However, due to time constraints, it has been implemented as a single state for now.
     public class RootHubState : IStateController<EmptyPayloadType>
     {
         private readonly UniTaskCompletionSource<IStateMachineInstruction> _machineInstructionCompletionSource = new();
@@ -30,17 +34,19 @@ namespace Core.Hub
         private readonly IAssetProvider _assetProvider;
         private readonly IPlayerDataService _playerDataService;
         private readonly GameContext _gameContext;
-        private readonly IViewLoader<IHubView> _hubViewLoader;
+        private readonly ISharedViewLoader<IHubView> _hubViewLoader;
         private readonly IViewLoader<IMinigameItemView> _minigamesItemViewLoader;
+        private readonly IViewLoader<IResultsItemView> _resultsItemViewLoader;
         private readonly IConfigProvider<MinigamesConfig> _minigamesConfigProvider;
 
-        private readonly Dictionary<IMinigameItemView, Action> _clickHandlers = new();
+        private readonly Dictionary<IMinigameItemView, Action> _minigameClickHandlers = new();
+        private readonly Dictionary<IResultsItemView, Action> _resultClickHandlers = new();
         private readonly List<IMinigameItemView> _minigameViews = new();
 
         private IHubView _hubView;
         private List<MinigameModel> _minigames;
+        private List<MatchHistoryItem> _results;
 
-        private IControllerResources _resources;
         private IControllerChildren _controllerChildren;
 
         public RootHubState(
@@ -48,8 +54,9 @@ namespace Core.Hub
             IAssetProvider assetProvider,
             GameContext gameContext,
             IPlayerDataService playerDataService,
-            IViewLoader<IHubView> hubViewLoader,
+            ISharedViewLoader<IHubView> hubViewLoader,
             IViewLoader<IMinigameItemView> minigamesItemViewLoader,
+            IViewLoader<IResultsItemView> resultsItemViewLoader,
             IConfigProvider<MinigamesConfig> minigamesConfigProvider)
         {
             _resolver = resolver;
@@ -59,6 +66,7 @@ namespace Core.Hub
             _hubViewLoader = hubViewLoader;
             _minigamesItemViewLoader = minigamesItemViewLoader;
             _minigamesConfigProvider = minigamesConfigProvider;
+            _resultsItemViewLoader = resultsItemViewLoader;
         }
 
         public UniTask OnInitialize(IControllerResources resources, CancellationToken token)
@@ -70,23 +78,47 @@ namespace Core.Hub
             IControllerChildren controllerChildren,
             CancellationToken token)
         {
-            _minigames = await GetMinigames();
+            await FetchDataAsync();
 
             _hubView = await _hubViewLoader.Load(resources, token, null);
 
-            _hubView.MinigamesHolder.gameObject.SetActive(true);
+            await SelectMinigamesPanel();
+
+            _hubView.BottomPanel.OnTabSelected += OnTabSelected;
             
             OnBalanceChanged(CurrencyType.Gems, _playerDataService.PlayerData.Gems);
             OnBalanceChanged(CurrencyType.Cash, _playerDataService.PlayerData.Cash);
             _playerDataService.OnBalanceChanged += OnBalanceChanged;
 
-            await SpawnMinigameViews(_minigames, resources, token);
+
+            await SpawnViewsAsync(resources, token);
+        }
+        
+        private UniTask FetchDataAsync()
+        {
+            return UniTask.WhenAll(GetMinigames().ContinueWith(m => _minigames = m),
+                FetchResultsFromServer().ContinueWith(r => _results = r));
         }
 
+        private void OnTabSelected(int tabIndex)
+        {
+            switch (tabIndex)
+            {
+                case 0:
+                    SelectMinigamesPanel().Forget();
+                    break;
+                case 1:
+                    SelectResultsPanel().Forget();
+                    break;
+                default:
+                    Debug.LogError($"Unknown tab index selected: {tabIndex}");
+                    break;
+            }
+        }
+        
         public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources,
             IControllerChildren controllerChildren, CancellationToken token)
         {
-            _resources = resources;
             _controllerChildren = controllerChildren;
 
             return await _machineInstructionCompletionSource.Task.AttachExternalCancellation(token);
@@ -95,8 +127,10 @@ namespace Core.Hub
         public UniTask OnStop(CancellationToken token)
         {
             _playerDataService.OnBalanceChanged -= OnBalanceChanged;
+            _hubView.BottomPanel.OnTabSelected -= OnTabSelected;
 
             _hubView.MinigamesHolder.gameObject.SetActive(false);
+            _hubView.ResultsView.gameObject.SetActive(false);
 
             ClearClickHandlers();
 
@@ -108,6 +142,49 @@ namespace Core.Hub
         public UniTask OnDispose(CancellationToken token)
         {
             return UniTask.CompletedTask;
+        }
+
+        private UniTask SpawnViewsAsync(IControllerResources resources, CancellationToken token)
+        {
+            return UniTask.WhenAll(SpawnMinigameViews(_minigames, resources, token),
+                SpawnResultItems(_results, resources, token));
+        }
+
+        private async UniTask SpawnResultItems(List<MatchHistoryItem> items, IControllerResources resources,
+            CancellationToken token)
+        {
+            await UniTask.WhenAll(Enumerable.Select(items, item => CreateResultItemView(item, resources, token)));
+        }
+
+        private async UniTask CreateResultItemView(MatchHistoryItem item, IControllerResources resources, CancellationToken token)
+        {
+            if (item?.reward == null || item?.reward?.amount <= 0)
+                return;
+            
+            var container = item.rewardClaimed
+                ? _hubView.ResultsView.ClaimedResultsContainer
+                : _hubView.ResultsView.ReadyForClaimResultsContainer;
+            
+            var view = await _resultsItemViewLoader.Load(resources, token, container);
+
+            view.SetData(item.gameName, null, item.timeAgo, ServerDataAdapter.FromServer(item.reward),
+                item.rewardClaimed, !item.rewardClaimed);
+
+            view.OnClaimButtonClicked += OnClickHandler;
+            _resultClickHandlers[view] = OnClickHandler;
+
+            return;
+
+            async void OnClickHandler()
+            {
+                view.SetHighlighted(false);
+                view.Transform.parent = _hubView.ResultsView.ClaimedResultsContainer;
+                
+                var response = await ServerAPI.Matches.ClaimRewardAsync(item.matchId, _playerDataService.PlayerData.AuthToken);
+                var reward = ServerDataAdapter.FromServer(response.reward);
+
+                _playerDataService.GiveBalance(reward.CurrencyType, (int)reward.Amount);
+            }
         }
 
         private async UniTask SpawnMinigameViews(List<MinigameModel> models, IControllerResources resources,
@@ -136,7 +213,7 @@ namespace Core.Hub
 
             view.SetImage(icon);
             view.OnClick += OnClickHandler;
-            _clickHandlers[view] = OnClickHandler;
+            _minigameClickHandlers[view] = OnClickHandler;
 
             _minigameViews.Add(view);
 
@@ -163,6 +240,7 @@ namespace Core.Hub
             };
             
             _hubView.MinigamesHolder.gameObject.SetActive(false);
+            _hubView.BottomPanel.gameObject.SetActive(false);
 
             await _controllerChildren
                 .Create<MinigameSelectModeState, SelectModeStatePayload>(_resolver)
@@ -172,6 +250,7 @@ namespace Core.Hub
                 || _gameContext.SelectedMinigameConfiguration?.GameMode == null)
             {
                 _hubView.MinigamesHolder.gameObject.SetActive(true);
+                _hubView.BottomPanel.gameObject.SetActive(true);
 
                 return;
             }
@@ -203,7 +282,7 @@ namespace Core.Hub
             }
 
             return minigames;
-        }
+        }        
 
         private async UniTask<List<MinigameModel>> FetchMinigamesFromServer()
         {
@@ -217,6 +296,29 @@ namespace Core.Hub
             });
             
             return minigames?.ToList();
+        }
+        private async UniTask<List<MatchHistoryItem>> FetchResultsFromServer()
+        {
+            var response = await ServerAPI.Player.GetPlayerHistoryAsync(_playerDataService.PlayerData.AuthToken);
+
+            var results = new List<MatchHistoryItem>();
+            results.AddRange(response.history.pastMatches);
+            results.AddRange(response.history.pendingMatches);
+            results.AddRange(response.history.rewardsToClaim);
+            
+            return results;
+        }
+
+        private async UniTask SelectMinigamesPanel()
+        {
+            _hubView.ResultsView.gameObject.SetActive(false);
+            _hubView.MinigamesHolder.gameObject.SetActive(true);
+        }
+        
+        private async UniTask SelectResultsPanel()
+        {
+            _hubView.MinigamesHolder.gameObject.SetActive(false);
+            _hubView.ResultsView.gameObject.SetActive(true);
         }
 
         private void OnBalanceChanged(CurrencyType assetType, int amount)
@@ -236,10 +338,15 @@ namespace Core.Hub
 
         private void ClearClickHandlers()
         {
-            foreach (var kvp in _clickHandlers)
+            foreach (var kvp in _minigameClickHandlers)
                 kvp.Key.OnClick -= kvp.Value;
 
-            _clickHandlers.Clear();
+            _minigameClickHandlers.Clear();
+            
+            foreach (var kvp in _resultClickHandlers)
+                kvp.Key.OnClaimButtonClicked -= kvp.Value;
+
+            _resultClickHandlers.Clear();
         }
     }
 }

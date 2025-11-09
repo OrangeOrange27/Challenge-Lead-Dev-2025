@@ -51,9 +51,7 @@ namespace Common.Server.DTOs
     [Serializable]
     public class PlayerHistoryResponse
     {
-        public bool success;
         public GroupedPlayerHistory history;
         public int total;
-        public string error;
     }
 }

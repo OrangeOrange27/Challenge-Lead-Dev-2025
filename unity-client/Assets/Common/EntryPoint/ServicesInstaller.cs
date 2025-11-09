@@ -76,6 +76,7 @@ namespace Core.EntryPoint
             builder.RegisterViewLoader<IMinigameModesView, MinigameModesView>("MinigameModesView");
             builder.RegisterViewLoader<IMinigameModeItemView, MinigameModeItemView>("MinigameModeItemView");
             builder.RegisterViewLoader<IScoreItemView, ScoreItemView>("ScoreItemView");
+            builder.RegisterViewLoader<IResultsItemView, ResultsItemView>("ResultsItemView");
         }
 
         private void RegisterMinigames(IContainerBuilder builder)

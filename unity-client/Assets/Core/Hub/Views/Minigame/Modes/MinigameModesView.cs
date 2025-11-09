@@ -14,10 +14,20 @@ namespace Core.Hub.Views
         public Transform ModesContainer => _modesContainer;
 
         public event Action OnBackButtonClicked;
-        
+
+        private void Awake()
+        {
+            _backButton.onClick.AddListener((() => OnBackButtonClicked?.Invoke()));
+        }
+
         public void SetIcon(Sprite icon)
         {
             _minigameIcon.sprite = icon;
+        }
+
+        private void OnDestroy()
+        {
+            _backButton.onClick.RemoveAllListeners();
         }
     }
 }

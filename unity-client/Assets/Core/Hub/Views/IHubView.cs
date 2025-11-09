@@ -1,4 +1,6 @@
 ﻿using Core.Hub.UI;
+using Core.Hub.Views;
+using Core.Hub.Views.Results;
 using UnityEngine;
 
 namespace Core.Hub
@@ -6,7 +8,11 @@ namespace Core.Hub
     public interface IHubView
     {
         HubTopPanel TopPanel { get; }
+        HubBottomPanel BottomPanel { get; }
+        
         Transform MainPanel { get; }
         Transform MinigamesHolder { get; }
+        
+        HubResultsView ResultsView { get; }
     }
 }

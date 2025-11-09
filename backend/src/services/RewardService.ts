@@ -1,4 +1,3 @@
-import { PlayerDataService } from "./PlayerDataService";
 import { MatchReward } from "../models/entities";
 import { MatchState } from "../models/enums";
 import {GameModesStorage} from "../storages/GameModesStorage";
@@ -12,7 +11,6 @@ export class RewardService {
   private gameModes = new GameModesStorage();
 
   private leaderboardService = new LeaderboardService();
-  private playerDataService = new PlayerDataService();
 
   async assignRewards(matchId: string): Promise<void> {
     const match = await this.matches.getById(matchId);
@@ -47,7 +45,7 @@ export class RewardService {
     if (!reward.canClaim) throw new Error("Reward is not claimable");
     if (reward.claimedAt) throw new Error("Reward already claimed");
 
-    await this.playerDataService.addReward(playerId, reward.reward, matchId);
+    //await this.playerDataService.addReward(playerId, reward.reward, matchId);
     await this.rewards.markClaimed(reward.id);
     console.log(`[RewardManager] Player ${playerId} claimed reward for match ${matchId}`);
 
