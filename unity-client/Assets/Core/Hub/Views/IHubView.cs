@@ -11,7 +11,7 @@ namespace Core.Hub
         HubBottomPanel BottomPanel { get; }
         
         Transform MainPanel { get; }
-        Transform MinigamesHolder { get; }
+        CanvasGroup MinigamesHolder { get; }
         
         HubResultsView ResultsView { get; }
     }

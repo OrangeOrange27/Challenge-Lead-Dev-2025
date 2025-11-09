@@ -12,12 +12,12 @@ namespace Core.Hub
         [SerializeField] private HubResultsView _resultsView;
         
         [SerializeField] private Transform _mainPanel;
-        [SerializeField] private Transform _minigamesHolder;
+        [SerializeField] private CanvasGroup _minigamesHolder;
         
         public HubTopPanel TopPanel => _topPanel;
         public HubBottomPanel BottomPanel => _bottomPanel;
         public Transform MainPanel => _mainPanel;
-        public Transform MinigamesHolder => _minigamesHolder;
+        public CanvasGroup MinigamesHolder => _minigamesHolder;
         public HubResultsView ResultsView => _resultsView;
     }
 }

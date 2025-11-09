@@ -13,6 +13,7 @@ using Core.Hub.States;
 using Core.Hub.UI;
 using Core.Hub.UI.Components;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Infra;
 using Infra.AssetManagement.AssetProvider;
 using Infra.AssetManagement.ViewLoader;
@@ -48,6 +49,7 @@ namespace Core.Hub
         private List<MatchHistoryItem> _results;
 
         private IControllerChildren _controllerChildren;
+        private CancellationTokenSource _animCts;
 
         public RootHubState(
             IObjectResolver resolver,
@@ -82,10 +84,11 @@ namespace Core.Hub
 
             _hubView = await _hubViewLoader.Load(resources, token, null);
 
-            await SelectMinigamesPanel();
+            _hubView.MinigamesHolder.gameObject.SetActive(true);
+            _hubView.ResultsView.gameObject.SetActive(false);
 
             _hubView.BottomPanel.OnTabSelected += OnTabSelected;
-            
+
             OnBalanceChanged(CurrencyType.Gems, _playerDataService.PlayerData.Gems);
             OnBalanceChanged(CurrencyType.Cash, _playerDataService.PlayerData.Cash);
             _playerDataService.OnBalanceChanged += OnBalanceChanged;
@@ -93,7 +96,7 @@ namespace Core.Hub
 
             await SpawnViewsAsync(resources, token);
         }
-        
+
         private UniTask FetchDataAsync()
         {
             return UniTask.WhenAll(GetMinigames().ContinueWith(m => _minigames = m),
@@ -102,20 +105,23 @@ namespace Core.Hub
 
         private void OnTabSelected(int tabIndex)
         {
+            _animCts?.Cancel();
+            _animCts = new CancellationTokenSource();
+
             switch (tabIndex)
             {
                 case 0:
-                    SelectMinigamesPanel().Forget();
+                    SelectMinigamesPanel(_animCts.Token).Forget();
                     break;
                 case 1:
-                    SelectResultsPanel().Forget();
+                    SelectResultsPanel(_animCts.Token).Forget();
                     break;
                 default:
                     Debug.LogError($"Unknown tab index selected: {tabIndex}");
                     break;
             }
         }
-        
+
         public async UniTask<IStateMachineInstruction> Execute(IControllerResources resources,
             IControllerChildren controllerChildren, CancellationToken token)
         {
@@ -156,15 +162,16 @@ namespace Core.Hub
             await UniTask.WhenAll(Enumerable.Select(items, item => CreateResultItemView(item, resources, token)));
         }
 
-        private async UniTask CreateResultItemView(MatchHistoryItem item, IControllerResources resources, CancellationToken token)
+        private async UniTask CreateResultItemView(MatchHistoryItem item, IControllerResources resources,
+            CancellationToken token)
         {
             if (item?.reward == null || item?.reward?.amount <= 0)
                 return;
-            
+
             var container = item.rewardClaimed
                 ? _hubView.ResultsView.ClaimedResultsContainer
                 : _hubView.ResultsView.ReadyForClaimResultsContainer;
-            
+
             var view = await _resultsItemViewLoader.Load(resources, token, container);
 
             view.SetData(item.gameName, null, item.timeAgo, ServerDataAdapter.FromServer(item.reward),
@@ -179,8 +186,9 @@ namespace Core.Hub
             {
                 view.SetHighlighted(false);
                 view.Transform.parent = _hubView.ResultsView.ClaimedResultsContainer;
-                
-                var response = await ServerAPI.Matches.ClaimRewardAsync(item.matchId, _playerDataService.PlayerData.AuthToken);
+
+                var response =
+                    await ServerAPI.Matches.ClaimRewardAsync(item.matchId, _playerDataService.PlayerData.AuthToken);
                 var reward = ServerDataAdapter.FromServer(response.reward);
 
                 _playerDataService.GiveBalance(reward.CurrencyType, (int)reward.Amount);
@@ -196,7 +204,7 @@ namespace Core.Hub
         private async UniTask CreateMinigameView(MinigameModel model, IControllerResources resources,
             CancellationToken token)
         {
-            var view = await _minigamesItemViewLoader.Load(resources, token, _hubView.MinigamesHolder);
+            var view = await _minigamesItemViewLoader.Load(resources, token, _hubView.MinigamesHolder.transform);
 
             if (view == null)
             {
@@ -238,7 +246,7 @@ namespace Core.Hub
                 ViewParent = _hubView.MainPanel,
                 MinigameIcon = icon
             };
-            
+
             _hubView.MinigamesHolder.gameObject.SetActive(false);
             _hubView.BottomPanel.gameObject.SetActive(false);
 
@@ -254,7 +262,7 @@ namespace Core.Hub
 
                 return;
             }
-            
+
             LaunchMinigame(_gameContext.SelectedMinigameConfiguration);
         }
 
@@ -273,30 +281,31 @@ namespace Core.Hub
         private async UniTask<List<MinigameModel>> GetMinigames()
         {
             var minigames = await FetchMinigamesFromServer();
-            if(minigames == null || minigames.Count == 0)
+            if (minigames == null || minigames.Count == 0)
             {
                 Debug.LogError("Failed to fetch minigames from server or no minigames available.");
-                
+
                 var minigamesConfig = _minigamesConfigProvider.Get();
                 minigames = minigamesConfig.Minigames;
             }
 
             return minigames;
-        }        
+        }
 
         private async UniTask<List<MinigameModel>> FetchMinigamesFromServer()
         {
             var response = await ServerAPI.Minigames.GetGamesAsync(_playerDataService.PlayerData.AuthToken);
-            
+
             var minigames = response.games?.Select(g => new MinigameModel
             {
                 Id = g.id,
                 IconId = g.iconId,
                 Modes = g.modes.Select(ServerDataAdapter.FromServer).ToList()
             });
-            
+
             return minigames?.ToList();
         }
+
         private async UniTask<List<MatchHistoryItem>> FetchResultsFromServer()
         {
             var response = await ServerAPI.Player.GetPlayerHistoryAsync(_playerDataService.PlayerData.AuthToken);
@@ -305,25 +314,51 @@ namespace Core.Hub
             results.AddRange(response.history.pastMatches);
             results.AddRange(response.history.pendingMatches);
             results.AddRange(response.history.rewardsToClaim);
-            
+
             return results;
         }
 
-        private async UniTask SelectMinigamesPanel()
+        private async UniTask SelectMinigamesPanel(CancellationToken token)
         {
-            _hubView.ResultsView.gameObject.SetActive(false);
-            _hubView.MinigamesHolder.gameObject.SetActive(true);
+            var minigames = _hubView.MinigamesHolder;
+            var results = _hubView.ResultsView;
+
+            minigames.gameObject.SetActive(true);
+            minigames.transform.localPosition = new Vector3(Screen.width * 3, 0, 0);
+
+            var seq = DOTween.Sequence();
+            seq.Join(results.transform.DOLocalMoveX(-Screen.width * 3, 0.5f).SetEase(Ease.InOutQuart));
+            seq.Join(results.CanvasGroup.DOFade(0, 0.4f));
+            seq.Join(minigames.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutBack));
+            seq.Join(minigames.DOFade(1, 0.4f));
+
+            await seq.AsyncWaitForCompletion().AsUniTask().AttachExternalCancellation(token);
+
+            results.gameObject.SetActive(false);
         }
-        
-        private async UniTask SelectResultsPanel()
+
+        private async UniTask SelectResultsPanel(CancellationToken token)
         {
-            _hubView.MinigamesHolder.gameObject.SetActive(false);
-            _hubView.ResultsView.gameObject.SetActive(true);
+            var minigames = _hubView.MinigamesHolder;
+            var results = _hubView.ResultsView;
+
+            results.gameObject.SetActive(true);
+            results.transform.localPosition = new Vector3(-Screen.width * 3, 0, 0);
+
+            var seq = DOTween.Sequence();
+            seq.Join(minigames.transform.DOLocalMoveX(Screen.width * 3, 0.5f).SetEase(Ease.InOutQuart));
+            seq.Join(minigames.DOFade(0, 0.4f));
+            seq.Join(results.transform.DOLocalMoveX(0, 0.5f).SetEase(Ease.OutBack));
+            seq.Join(results.CanvasGroup.DOFade(1, 0.4f));
+
+            await seq.AsyncWaitForCompletion().AsUniTask().AttachExternalCancellation(token);
+
+            minigames.gameObject.SetActive(false);
         }
 
         private void OnBalanceChanged(CurrencyType assetType, int amount)
         {
-            switch(assetType)
+            switch (assetType)
             {
                 case CurrencyType.Gems:
                     _hubView.TopPanel.UpdateGems(amount);
@@ -342,7 +377,7 @@ namespace Core.Hub
                 kvp.Key.OnClick -= kvp.Value;
 
             _minigameClickHandlers.Clear();
-            
+
             foreach (var kvp in _resultClickHandlers)
                 kvp.Key.OnClaimButtonClicked -= kvp.Value;
 

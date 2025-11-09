@@ -6,6 +6,7 @@ namespace Core.Hub.Views
 {
     public class HubResultsView : MonoBehaviour, IHubResultsView
     {
+        [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private TMP_Text _readyForClaimTitleText;
         [SerializeField] private TMP_Text _pendingTitleText;
         [SerializeField] private TMP_Text _claimedTitleText;
@@ -13,6 +14,7 @@ namespace Core.Hub.Views
         [SerializeField] private Transform _pendingResultsContainer;
         [SerializeField] private Transform _claimedResultsContainer;
 
+        public CanvasGroup CanvasGroup => _canvasGroup;
         public Transform ReadyForClaimResultsContainer => _readyForClaimResultsContainer;
         public Transform PendingResultsContainer => _pendingResultsContainer;
         public Transform ClaimedResultsContainer => _claimedResultsContainer;
