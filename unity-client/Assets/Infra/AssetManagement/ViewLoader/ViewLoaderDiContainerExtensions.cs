@@ -20,5 +20,16 @@ namespace Infra.AssetManagement.ViewLoader
             builder.Register<ViewLoader<TViewPrefab, TViewInterface, TKey>>(Lifetime.Singleton)
                 .WithParameter(convertKeyToAddressablesKey).AsImplementedInterfaces();
         }
+
+        public static void RegisterSharedViewLoader<TViewInterface, TViewPrefab>(this IContainerBuilder builder,
+            string addressablesKey)
+            where TViewPrefab : Component, TViewInterface where TViewInterface : class
+        {
+            builder.RegisterViewLoader<TViewInterface, TViewPrefab>(addressablesKey);
+            builder.Register<ISharedViewLoader<TViewInterface>, SharedViewLoader<TViewInterface, int>>(
+                Lifetime.Singleton);
+            builder.RegisterFactory<TViewInterface>(
+                resolver => () => resolver.Resolve<ISharedViewLoader<TViewInterface>>().CachedView, Lifetime.Transient);
+        }
     }
 }

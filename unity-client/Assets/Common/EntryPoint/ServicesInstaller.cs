@@ -71,7 +71,7 @@ namespace Core.EntryPoint
             builder.RegisterController<MinigameSelectModeState>();
             builder.RegisterController<MinigameLoadingState>();
             
-            builder.RegisterViewLoader<IHubView, HubView>("HubView");
+            builder.RegisterSharedViewLoader<IHubView, HubView>("HubView");
             builder.RegisterViewLoader<IMinigameItemView, MinigameItemView>("MinigameItemView");
             builder.RegisterViewLoader<IMinigameModesView, MinigameModesView>("MinigameModesView");
             builder.RegisterViewLoader<IMinigameModeItemView, MinigameModeItemView>("MinigameModeItemView");
